@@ -59,4 +59,5 @@ if uploaded_file is not None:
                     mime="text/plain"
                 )
             except deepl.DeepLException as e:
+
                 st.error(f"Wystąpił błąd z serwerem DeepL: {e}")
