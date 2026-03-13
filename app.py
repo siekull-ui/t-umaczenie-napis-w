@@ -1,10 +1,7 @@
 import streamlit as st
-import deepl
-import tempfile
-import os
 import base64
 
-# --- FUNKCJA DO WCZYTANIA I ANIMACJI TŁA ---
+# --- 1. FUNKCJE DOTYCZĄCE TŁA ---
 def get_base64_of_bin_file(bin_file):
     with open(bin_file, 'rb') as f:
         data = f.read()
@@ -17,7 +14,7 @@ def set_background(png_file):
         <style>
         @keyframes panBackground {{
             0% {{ background-position: 0% 0%; background-size: 110%; }}
-            50% {{ background-position: 100% 100%; background-size: 120%; }}
+            50% {{ background-position: 100% 100%; background-size: 130%; }}
             100% {{ background-position: 0% 0%; background-size: 110%; }}
         }}
         
@@ -27,44 +24,40 @@ def set_background(png_file):
             background-attachment: fixed;
             animation: panBackground 60s infinite alternate ease-in-out;
         }}
+
+        /* Efekt szklanej tafli na całą aplikację */
+        [data-testid="stAppViewContainer"] {{
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+        }}
         </style>
         '''
         st.markdown(page_bg_img, unsafe_allow_html=True)
     except FileNotFoundError:
-        st.error("Gdzie jest background.jpg?! Wrzuć plik do folderu.")
+        st.error("Nie znaleziono pliku 'background.jpg'.")
 
-# 1. Konfiguracja strony
-st.set_page_config(page_title="AI Document Translator", page_icon="✨", layout="wide")
+# --- 2. KONFIGURACJA STRONY ---
+st.set_page_config(page_title="AI App Template", page_icon="✨", layout="wide")
 set_background('background.jpg')
 
-# 2. Konfiguracja DeepL
-AUTH_KEY = "09d9dd8f-b8c5-45e6-be4f-dab5b623c368:fx"
-translator = deepl.Translator(AUTH_KEY)
-
-# 3. CSS - Ulepszony obszar zrzutu i głębia 3D
+# --- 3. STYLIZACJA INTERFEJSU (CSS) ---
 css = """
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
 
 * {
     font-family: 'Inter', sans-serif;
-    color: #1e293b !important; 
 }
 
+/* Ukrycie standardowych elementów Streamlit */
 [data-testid="stHeader"], [data-testid="stFooter"] {
     display: none;
 }
 
-[data-testid="stAppViewContainer"] {
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(35px);
-    -webkit-backdrop-filter: blur(35px);
-}
-
 .block-container {
     max-width: 800px !important;
-    padding-top: 8vh !important;
-    padding-bottom: 8vh !important;
+    padding-top: 10vh !important;
 }
 
 h1 {
@@ -74,165 +67,19 @@ h1 {
     background: linear-gradient(135deg, #3b82f6, #8b5cf6);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-bottom: 0.2rem !important;
-    text-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+    margin-bottom: 1rem !important;
 }
 
-.stMarkdown p {
+.sub-text {
     text-align: center;
     font-size: 1.15rem;
-    color: #475569 !important;
-    font-weight: 400;
-    margin-bottom: 2.5rem !important;
-}
-
-.stSelectbox div[data-baseweb="select"] {
-    background: rgba(255, 255, 255, 0.4) !important;
-    border: 1px solid rgba(255, 255, 255, 0.6) !important;
-    border-radius: 16px !important;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1) !important;
-    transition: all 0.3s ease;
-}
-.stSelectbox div[data-baseweb="select"]:hover {
-    background: rgba(255, 255, 255, 0.6) !important;
-    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.15) !important;
-}
-
-/* --- POTĘŻNY DROPZONE (Obszar wrzucania plików) --- */
-.stFileUploader section {
-    min-height: 300px !important; /* Zamienia pasek w wielki kwadrat/prostokąt */
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    align-items: center !important;
-    background: rgba(255, 255, 255, 0.25) !important;
-    border: 3px dashed rgba(99, 102, 241, 0.5) !important;
-    border-radius: 24px !important;
-    box-shadow: inset 0 0 30px rgba(255, 255, 255, 0.5), 0 15px 40px rgba(0, 0, 0, 0.08) !important;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    cursor: pointer !important;
-}
-
-.stFileUploader section:hover {
-    background: rgba(255, 255, 255, 0.5) !important;
-    border-color: #6366f1 !important;
-    transform: scale(1.02); /* Delikatne powiększenie (efekt pop-up) */
-    box-shadow: inset 0 0 50px rgba(255, 255, 255, 0.7), 0 20px 50px rgba(0, 0, 0, 0.12) !important;
-}
-
-/* Ukrycie standardowych, brzydkich napisów wewnątrz dropzone */
-.stFileUploader section > div > span,
-.stFileUploader section > div > small {
-    display: none !important;
-}
-
-/* Powiększenie i dodanie cienia do samej ikony chmury */
-.stFileUploader section svg {
-    width: 100px !important;
-    height: 100px !important;
-    color: #6366f1 !important;
-    filter: drop-shadow(0 10px 15px rgba(99, 102, 241, 0.4));
-    margin-bottom: 10px;
-}
-
-.stButton button {
-    width: 100%;
-    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%) !important;
-    color: white !important; 
-    border: none !important;
-    padding: 16px 24px !important;
-    border-radius: 16px !important;
-    font-weight: 700 !important;
-    font-size: 1.15rem !important;
-    letter-spacing: 1px;
-    box-shadow: 0 10px 25px -5px rgba(168, 85, 247, 0.5), inset 0 2px 5px rgba(255, 255, 255, 0.3) !important;
-    transition: all 0.2s ease-in-out !important;
-}
-.stButton button:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 35px -10px rgba(168, 85, 247, 0.7), inset 0 2px 5px rgba(255, 255, 255, 0.4) !important;
-}
-
-.stTextArea textarea {
-    background: rgba(255, 255, 255, 0.4) !important;
-    border: 1px solid rgba(255, 255, 255, 0.7) !important;
-    border-radius: 16px !important;
-    box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.03) !important;
-    color: #334155 !important;
-}
-
-.stAlert {
-    background: rgba(255, 255, 255, 0.6) !important;
-    border: 1px solid rgba(255, 255, 255, 0.8) !important;
-    border-left: 5px solid #10b981 !important; 
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
-    border-radius: 16px !important;
-}
-.stAlert:has(.st-emotion-cache-1kqow14) { 
-    border-left-color: #ef4444 !important;
+    color: #475569;
+    margin-bottom: 3rem;
 }
 </style>
 """
-
 st.markdown(css, unsafe_allow_html=True)
 
-# 4. Interfejs aplikacji
-st.title("Tłumacz AI PRO")
-st.write("Wgraj dokument (TXT, SRT). Struktura pozostanie nienaruszona.")
-
-target_languages = {
-    "Polski": "PL", 
-    "Angielski (USA)": "EN-US", 
-    "Niemiecki": "DE", 
-    "Hiszpański": "ES",
-    "Francuski": "FR"
-}
-
-selected_lang = st.selectbox("Wybierz język docelowy:", list(target_languages.keys()))
-target_code = target_languages[selected_lang]
-
-# Ukrywamy główny label ustawiając "label_visibility"
-uploaded_file = st.file_uploader(" ", type=["txt", "srt"], label_visibility="collapsed")
-
-if uploaded_file is not None:
-    file_ext = uploaded_file.name.split('.')[-1].lower()
-    
-    try:
-        preview_text = uploaded_file.getvalue().decode("utf-8")
-        st.text_area("Podgląd struktury pliku", preview_text[:300] + "...\n[...]", height=130, disabled=True)
-    except Exception:
-        st.error("Problem z kodowaniem pliku. Upewnij się, że to format UTF-8.")
-
-    if st.button("🚀 URUCHOM TŁUMACZENIE"):
-        with st.spinner("Sztuczna inteligencja pracuje nad dokumentem..."):
-            try:
-                with tempfile.NamedTemporaryFile(delete=False, suffix=f".{file_ext}") as temp_in:
-                    temp_in.write(uploaded_file.getvalue())
-                    temp_in_path = temp_in.name
-                
-                temp_out_path = temp_in_path.replace(f".{file_ext}", f"_out.{file_ext}")
-
-                translator.translate_document_from_filepath(
-                    temp_in_path,
-                    temp_out_path,
-                    target_lang=target_code
-                )
-
-                with open(temp_out_path, "rb") as f:
-                    translated_bytes = f.read()
-
-                os.remove(temp_in_path)
-                os.remove(temp_out_path)
-
-                st.success("Wszystko poszło gładko! Plik przetłumaczony, formatowanie nienaruszone.")
-                
-                new_filename = f"{target_code}_{uploaded_file.name}"
-                st.download_button(
-                    label="💾 POBIERZ GOTOWY PLIK",
-                    data=translated_bytes,
-                    file_name=new_filename,
-                    mime="text/plain"
-                )
-                
-            except Exception as e:
-                st.error(f"Błąd krytyczny: {e}")
+# --- 4. MIEJSCE NA TWOJE NOWE FUNKCJE ---
+st.markdown("<h1>System AI</h1>", unsafe_allow_html=True)
+st.markdown("<p class='sub-text'>Gotowy do implementacji nowych funkcjonalności.</p>", unsafe_allow_html=True)
