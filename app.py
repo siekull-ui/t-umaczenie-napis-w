@@ -7,7 +7,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- 2. KONSTRUKCJA INTERFEJSU (CSS + HTML wewnątrz st.markdown) ---
+# --- 2. KONSTRUKCJA INTERFEJSU (CSS + HTML) ---
 def apply_hero_layout():
     st.markdown("""
         <style>
@@ -23,8 +23,8 @@ def apply_hero_layout():
             background-color: #F0D3DE !important;
         }
 
-        /* UKRYTE WEJŚCIA STERUJĄCE LOGIKĄ */
-        input[type="radio"], input[type="checkbox"] {
+        /* UKRYTE WEJŚCIA STERUJĄCE LOGIKĄ (Tylko zakładki) */
+        input[type="radio"] {
             display: none;
         }
 
@@ -64,7 +64,6 @@ def apply_hero_layout():
             display: flex;
             gap: 60px;
             align-items: center;
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .nav-links label {
@@ -75,7 +74,7 @@ def apply_hero_layout():
             position: relative;
         }
 
-        /* Fala pod tekstami (domyślnie ukryta) */
+        /* Fala pod tekstami */
         .nav-links label::after {
             content: '';
             position: absolute;
@@ -89,77 +88,13 @@ def apply_hero_layout():
             transition: opacity 0.4s ease;
         }
 
-        /* AKTYWACJA FALI W ZALEŻNOŚCI OD WYBRANEJ ZAKŁADKI */
+        /* AKTYWACJA FALI W ZALEŻNOŚCI OD ZAKŁADKI */
         #tab-1:checked ~ .hero-nav .nav-links label[for="tab-1"]::after,
         #tab-2:checked ~ .hero-nav .nav-links label[for="tab-2"]::after,
         #tab-3:checked ~ .hero-nav .nav-links label[for="tab-3"]::after,
         #tab-4:checked ~ .hero-nav .nav-links label[for="tab-4"]::after,
         #tab-5:checked ~ .hero-nav .nav-links label[for="tab-5"]::after {
             opacity: 1;
-        }
-
-        /* --- PASEK WYSZUKIWANIA (LUPKA) --- */
-        .search-container {
-            display: flex;
-            align-items: center;
-            margin-left: 60px;
-            background: rgba(255, 255, 255, 0);
-            border-radius: 30px;
-            padding: 0;
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            overflow: hidden;
-        }
-
-        .search-input {
-            width: 0;
-            opacity: 0;
-            border: none;
-            background: transparent;
-            outline: none;
-            font-family: 'Poppins', sans-serif;
-            font-size: 14px;
-            color: #1a1a1a;
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            padding: 0;
-        }
-
-        .search-input::placeholder {
-            color: #a0a0a0;
-        }
-
-        .search-icon-label {
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            padding: 8px;
-            border-radius: 50%;
-            transition: background 0.3s ease;
-        }
-
-        .search-icon-label svg {
-            width: 18px;
-            height: 18px;
-            stroke: #1a1a1a;
-            stroke-width: 2;
-            transition: stroke 0.3s ease;
-        }
-
-        /* EFEKT PO KLIKNIĘCIU W LUPKĘ */
-        #search-toggle:checked ~ .hero-nav .search-container {
-            background: #ffffff;
-            padding: 2px 15px 2px 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            margin-left: 40px; 
-        }
-
-        #search-toggle:checked ~ .hero-nav .search-container .search-input {
-            width: 160px;
-            opacity: 1;
-            padding-right: 10px;
-        }
-
-        #search-toggle:checked ~ .hero-nav .search-container .search-icon-label svg {
-            stroke: #FF2A5F;
         }
 
         /* --- STREFA ZAWARTOŚCI NA ŚRODKU --- */
@@ -186,7 +121,7 @@ def apply_hero_layout():
             transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* POJAWIANIE SIĘ TREŚCI ZGODNIE Z ZAKŁADKĄ */
+        /* POJAWIANIE SIĘ TREŚCI */
         #tab-1:checked ~ .content-area #content-1,
         #tab-2:checked ~ .content-area #content-2,
         #tab-3:checked ~ .content-area #content-3,
@@ -196,7 +131,6 @@ def apply_hero_layout():
             transform: translate(-50%, -50%);
         }
 
-        /* Usunięcie domyślnych zachowań Streamlit */
         .main .block-container {
             padding: 0 !important;
         }
@@ -209,7 +143,6 @@ def apply_hero_layout():
             <input type="radio" name="tabs" id="tab-3">
             <input type="radio" name="tabs" id="tab-4">
             <input type="radio" name="tabs" id="tab-5">
-            <input type="checkbox" id="search-toggle">
 
             <nav class="hero-nav">
                 <div class="nav-links">
@@ -218,16 +151,6 @@ def apply_hero_layout():
                     <label for="tab-3">Services</label>
                     <label for="tab-4">Portfolio</label>
                     <label for="tab-5">Contact</label>
-                </div>
-                
-                <div class="search-container">
-                    <input type="text" class="search-input" placeholder="Wyszukaj...">
-                    <label for="search-toggle" class="search-icon-label">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg>
-                    </label>
                 </div>
             </nav>
 
