@@ -8,8 +8,8 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- 2. KOMPLETNY INTERFEJS (CSS + JS + HTML) ---
-def apply_elastic_sidebar_layout():
+# --- 2. KOMPLETNY INTERFEJS (CSS + HTML) ---
+def apply_fixed_layout():
     style = """
     <style>
     /* UKRYCIE ELEMENTÓW SYSTEMOWYCH */
@@ -34,18 +34,22 @@ def apply_elastic_sidebar_layout():
     :root {
         --sidebar-width: 320px;
         --margin: 1cm;
-        /* TWOJA KRZYWA SPRĘŻYSTOŚCI */
         --elastic-curve: cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    /* PANEL BOCZNY (SIDEBAR) */
+    /* UKRYTY CHECKBOX DO OBSŁUGI KLIKNIĘCIA */
+    #sidebar-checkbox {
+        display: none;
+    }
+
+    /* PANEL BOCZNY */
     #custom-sidebar {
         position: fixed;
         top: var(--margin);
         bottom: var(--margin);
-        left: calc(-1 * var(--sidebar-width) - 2cm); /* Ukryty poza lewą krawędzią */
+        left: calc(-1 * var(--sidebar-width) - 2cm); /* Ukryty */
         width: var(--sidebar-width);
-        background: rgba(255, 255, 255, 0.08); /* 92% przezroczystości */
+        background: rgba(255, 255, 255, 0.08);
         backdrop-filter: blur(40px) saturate(150%);
         -webkit-backdrop-filter: blur(40px) saturate(150%);
         border: 1px solid rgba(255, 255, 255, 0.2);
@@ -55,14 +59,14 @@ def apply_elastic_sidebar_layout():
         box-shadow: 15px 0 40px rgba(0,0,0,0.2);
     }
 
-    /* GŁÓWNY KONTENER (CANVAS) */
+    /* GŁÓWNY KONTENER */
     #main-canvas {
         position: fixed;
         top: var(--margin);
         bottom: var(--margin);
         left: var(--margin);
         right: var(--margin);
-        background: rgba(255, 255, 255, 0.07); /* ~93% przezroczystości */
+        background: rgba(255, 255, 255, 0.07);
         backdrop-filter: blur(45px) saturate(160%);
         -webkit-backdrop-filter: blur(45px) saturate(160%);
         border: 1px solid rgba(255, 255, 255, 0.25);
@@ -72,24 +76,14 @@ def apply_elastic_sidebar_layout():
         box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
     }
 
-    /* --- LOGIKA ŚCISKANIA (SQUEEZE) --- */
-    body.sidebar-active #custom-sidebar {
-        left: var(--margin);
-    }
-
-    body.sidebar-active #main-canvas {
-        /* Ściska kontener: lewa krawędź przesuwa się, by zrobić miejsce dla panelu + odstęp */
-        left: calc(var(--sidebar-width) + var(--margin) + 0.5cm);
-    }
-
-    /* PULSUJĄCY PRZYCISK / STRZAŁKA */
+    /* STRZAŁKA (LABEL DLA CHECKBOXA) */
     @keyframes pulse-ring {
-        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
-        70% { transform: scale(1.1); box-shadow: 0 0 0 15px rgba(255, 255, 255, 0); }
-        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        0% { transform: translateY(-50%) scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
+        70% { transform: translateY(-50%) scale(1.1); box-shadow: 0 0 0 15px rgba(255, 255, 255, 0); }
+        100% { transform: translateY(-50%) scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
     }
 
-    #sidebar-toggle {
+    .toggle-label {
         position: fixed;
         left: 20px;
         top: 50%;
@@ -112,24 +106,34 @@ def apply_elastic_sidebar_layout():
         user-select: none;
     }
 
-    /* Obrót strzałki i przesunięcie przycisku przy otwarciu */
-    body.sidebar-active #sidebar-toggle {
+    /* --- LOGIKA DYNAMIKI (Gdy checkbox jest zaznaczony) --- */
+    
+    #sidebar-checkbox:checked ~ #custom-sidebar {
+        left: var(--margin);
+    }
+
+    #sidebar-checkbox:checked ~ #main-canvas {
+        left: calc(var(--sidebar-width) + var(--margin) + 0.5cm);
+    }
+
+    #sidebar-checkbox:checked ~ .toggle-label {
         left: calc(var(--sidebar-width) + var(--margin) + 15px);
         transform: translateY(-50%) rotate(180deg);
         background: rgba(255, 255, 255, 0.3);
     }
 
-    #sidebar-toggle:hover {
+    .toggle-label:hover {
         background: rgba(255, 255, 255, 0.4);
-        transform: translateY(-50%) scale(1.2);
     }
     </style>
 
-    <div id="sidebar-toggle" onclick="document.body.classList.toggle('sidebar-active')">❯</div>
+    <input type="checkbox" id="sidebar-checkbox">
+    <label for="sidebar-checkbox" class="toggle-label">❯</label>
+    
     <div id="custom-sidebar"></div>
     <div id="main-canvas"></div>
     """
     st.markdown(style, unsafe_allow_html=True)
 
-# Wywołanie układu
-apply_elastic_sidebar_layout()
+# Wywołanie interfejsu
+apply_fixed_layout()
