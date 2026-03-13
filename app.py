@@ -1,55 +1,52 @@
 import streamlit as st
 
-# --- 1. KONFIGURACJA ---
+# --- CONFIG ---
 st.set_page_config(
     page_title="Blank",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# --- 2. CZYSTY INTERFEJS GLASSMORPHISM ---
+# --- UI STRUCTURE ---
 st.markdown("""
     <style>
-    /* Ukrycie elementów systemowych */
+    /* Ukrycie UI systemowego */
     [data-testid="stHeader"], [data-testid="stFooter"], [data-testid="stToolbar"] {
         display: none !important;
     }
 
-    /* Tło aplikacji */
+    /* Tło bazowe */
     .stApp {
         background-color: #F0D3DE !important;
         overflow: hidden;
     }
 
-    /* Główny kontener "Hero" */
+    /* Kontener Hero - Glassmorphism */
     .main .block-container {
-        /* Stylistyka: Jasny, 90% krycia + Blur */
+        /* Wygląd: 90% bieli + satynowy blur */
         background: rgba(255, 255, 255, 0.9) !important;
-        backdrop-filter: blur(20px) saturate(180%);
-        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        backdrop-filter: blur(25px) saturate(150%);
+        -webkit-backdrop-filter: blur(25px) saturate(150%);
         
-        /* Geometria: Marginesy 1cm i dopasowanie do ekranu */
+        /* Geometria i marginesy */
         margin: 1cm !important;
         border-radius: 1cm !important;
         
-        /* Precyzyjne wymiary */
-        min-height: calc(100vh - 2cm) !important;
+        /* Dopasowanie do ekranu */
         height: calc(100vh - 2cm) !important;
-        max-width: calc(100% - 2cm) !important;
+        min-height: calc(100vh - 2cm) !important;
+        max-width: calc(100vw - 2cm) !important;
         
-        /* Detale wykończenia */
-        border: 1px solid rgba(255, 255, 255, 0.4);
-        box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.03);
+        /* Detale krawędzi */
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
         
-        /* Reset paddingów Streamlit */
+        /* Resetowanie wnętrza */
         padding: 0 !important;
     }
 
-    /* Usunięcie domyślnych odstępów pionowych */
     [data-testid="stVerticalBlock"] {
         gap: 0 !important;
     }
     </style>
     """, unsafe_allow_html=True)
-
-# Kontener jest teraz gotowy i pusty.
