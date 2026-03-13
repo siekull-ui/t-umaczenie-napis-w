@@ -21,7 +21,7 @@ def apply_hero_layout():
             background-color: #F0D3DE !important;
         }
 
-        /* KONTENER HERO - Stylizacja satynowa */
+        /* KONTENER HERO - Satynowa tafle z delikatnym cieniem */
         #hero-canvas {
             position: fixed;
             top: 1cm;
@@ -29,24 +29,24 @@ def apply_hero_layout():
             left: 1cm;
             right: 1cm;
             
-            /* Jasne tło 90% przepustowości */
+            /* Jasne tło: 90% nieprzezroczystości (0.9 alpha) */
             background: rgba(255, 255, 255, 0.9);
             
             /* Efekt Glassmorphism / Satyna */
-            backdrop-filter: blur(25px) saturate(160%);
-            -webkit-backdrop-filter: blur(25px) saturate(160%);
+            backdrop-filter: blur(20px) saturate(170%);
+            -webkit-backdrop-filter: blur(20px) saturate(170%);
             
-            /* Zaokrąglenie 1cm i obramowanie */
+            /* Zaokrąglenie 1cm i subtelna krawędź */
             border-radius: 1cm;
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.5);
             
-            /* Cień dla głębi */
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+            /* Bardzo delikatny, szeroki cień pod spodem */
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.04);
             
             z-index: 1000;
         }
 
-        /* Usunięcie marginesów domyślnych Streamlit, aby nie przesuwały widoku */
+        /* Usunięcie marginesów domyślnych Streamlit */
         .main .block-container {
             padding: 0 !important;
         }
