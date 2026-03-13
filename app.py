@@ -1,26 +1,20 @@
 import streamlit as st
 
-# --- 1. KONFIGURACJA ---
+# --- 1. MINIMALISTYCZNA KONFIGURACJA ---
 st.set_page_config(
-    page_title="Blank Hero Navigation",
+    page_title="Blank Hero - Fast SPA",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# Pobieramy aktualną zakładkę z URL (domyślnie 'Home')
-query_params = st.query_params
-active_tab = query_params.get("tab", "Home")
-
-# --- 2. STYLIZACJA I STRUKTURA ---
-def apply_hero_layout(current_tab):
-    # Generujemy dynamicznie klasy 'active' dla linków
-    def is_active(name):
-        return "active" if current_tab == name else ""
-
+# --- 2. INTERFEJS (CSS + HTML + JS) ---
+def apply_fast_hero_layout():
+    
     css_styles = """
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap');
 
+    /* Ukrycie elementów systemowych Streamlit */
     [data-testid="stHeader"], [data-testid="stFooter"], [data-testid="stToolbar"] {
         display: none !important;
     }
@@ -29,6 +23,7 @@ def apply_hero_layout(current_tab):
         background-color: #F0D3DE !important;
     }
 
+    /* KONTENER HERO */
     #hero-canvas {
         position: fixed;
         top: 1cm; bottom: 1cm; left: 1cm; right: 1cm;
@@ -38,10 +33,11 @@ def apply_hero_layout(current_tab):
         border-radius: 1cm;
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         z-index: 1000;
-        padding: 80px 50px; /* Miejsce na treść poniżej navi */
-        overflow: hidden;
+        padding: 100px 50px 50px 50px; /* Miejsce na treść poniżej nawigacji */
+        overflow-y: auto; /* Scrollowanie, jeśli treść jest długa */
     }
 
+    /* --- NAWIGACJA --- */
     .hero-nav {
         position: absolute;
         top: 40px;
@@ -52,7 +48,6 @@ def apply_hero_layout(current_tab):
         font-family: 'Poppins', sans-serif;
     }
 
-    /* Linki jako nawigacja - używamy tagu 'a', ale z parametrem query */
     .hero-nav a {
         color: #1a1a1a !important;
         text-decoration: none;
@@ -85,12 +80,17 @@ def apply_hero_layout(current_tab):
         opacity: 1;
     }
 
-    /* Treść zakładki */
-    .content-area {
+    /* --- TREŚĆ ZAKŁADEK --- */
+    .tab-content {
+        display: none; /* Domyślnie ukrywamy wszystkie sekcje */
         font-family: 'Poppins', sans-serif;
         color: #1a1a1a;
-        margin-top: 60px;
-        animation: fadeIn 0.5s ease;
+        animation: fadeIn 0.4s ease-in-out;
+    }
+
+    /* Klasa dla aktywnej sekcji */
+    .tab-content.active-content {
+        display: block;
     }
 
     @keyframes fadeIn {
@@ -98,31 +98,69 @@ def apply_hero_layout(current_tab):
         to { opacity: 1; transform: translateY(0); }
     }
 
+    /* Usunięcie marginesów domyślnych Streamlit */
     .main .block-container { padding: 0 !important; }
     </style>
     """
 
-    # HTML z linkami aktualizującymi URL (?tab=Nazwa)
-    html_structure = f"""
+    # Struktura HTML z osadzonym skryptem JS
+    html_structure = """
     <div id="hero-canvas">
         <nav class="hero-nav">
-            <a href="/?tab=Home" target="_self" class="{is_active('Home')}">Home</a>
-            <a href="/?tab=About" target="_self" class="{is_active('About')}">About</a>
-            <a href="/?tab=Services" target="_self" class="{is_active('Services')}">Services</a>
-            <a href="/?tab=Portfolio" target="_self" class="{is_active('Portfolio')}">Portfolio</a>
-            <a href="/?tab=Contact" target="_self" class="{is_active('Contact')}">Contact</a>
+            <a onclick="switchTab('home', this)" class="active">Home</a>
+            <a onclick="switchTab('about', this)">About</a>
+            <a onclick="switchTab('services', this)">Services</a>
+            <a onclick="switchTab('portfolio', this)">Portfolio</a>
+            <a onclick="switchTab('contact', this)">Contact</a>
         </nav>
-        <div class="content-area">
-            <h1>{current_tab}</h1>
-            <p>To jest zawartość zakładki: <strong>{current_tab}</strong></p>
+
+        <div id="home" class="tab-content active-content">
+            <h1>Witaj na stronie głównej 👋</h1>
+            <p>To jest błyskawiczna nawigacja bez przeładowywania.</p>
+        </div>
+        
+        <div id="about" class="tab-content">
+            <h1>O nas 🚀</h1>
+            <p>Tutaj znajduje się treść zakładki About. Pojawia się natychmiast po kliknięciu!</p>
+        </div>
+
+        <div id="services" class="tab-content">
+            <h1>Usługi 🛠️</h1>
+            <p>Nasza oferta...</p>
+        </div>
+
+        <div id="portfolio" class="tab-content">
+            <h1>Portfolio 🎨</h1>
+            <p>Zobacz nasze projekty.</p>
+        </div>
+
+        <div id="contact" class="tab-content">
+            <h1>Kontakt 📬</h1>
+            <p>Napisz do nas wiadomość.</p>
         </div>
     </div>
+
+    <script>
+    function switchTab(tabId, element) {
+        // 1. Usuń klasę 'active' ze wszystkich linków
+        const links = document.querySelectorAll('.hero-nav a');
+        links.forEach(link => link.classList.remove('active'));
+        
+        // 2. Dodaj klasę 'active' do klikniętego linku (uruchamia falę)
+        element.classList.add('active');
+
+        // 3. Ukryj wszystkie sekcje z treścią
+        const contents = document.querySelectorAll('.tab-content');
+        contents.forEach(content => content.classList.remove('active-content'));
+
+        // 4. Pokaż tylko wybraną sekcję
+        document.getElementById(tabId).classList.add('active-content');
+    }
+    </script>
     """
     
-    st.markdown(css_styles + html_structure, unsafe_allow_html=True)
+    # Wstrzyknięcie całości do Streamlit
+    st.components.v1.html(css_styles + html_structure, height=1000, scrolling=False)
 
-# --- 3. WYŚWIETLANIE ---
-apply_hero_layout(active_tab)
-
-# Opcjonalnie: Możesz tu dodać standardowe widgety Streamlit, 
-# ale będą one "pod" Twoim overlayem, chyba że dostosujesz z-index.
+# Wywołanie układu
+apply_fast_hero_layout()
