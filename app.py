@@ -21,7 +21,7 @@ def apply_hero_layout():
             background-color: #F0D3DE !important;
         }
 
-        /* KONTENER HERO - Prawdziwy Glassmorphism */
+        /* KONTENER HERO - Czysty Glassmorphism bez krawędzi */
         #hero-canvas {
             position: fixed;
             top: 1cm;
@@ -29,19 +29,19 @@ def apply_hero_layout():
             left: 1cm;
             right: 1cm;
             
-            /* KLUCZ: Duża przezroczystość bieli (tylko 25% krycia), aby blur zadziałał */
+            /* Tło - 25% krycia bieli */
             background: rgba(255, 255, 255, 0.25);
             
-            /* Efekt Glassmorphism / Satyna - mocne rozmycie i nasycenie kolorów tła */
+            /* Efekt rozmycia / satyny */
             backdrop-filter: blur(25px) saturate(150%);
             -webkit-backdrop-filter: blur(25px) saturate(150%);
             
-            /* Zaokrąglenie 1cm i wyraźniejsza, "szklana" krawędź */
+            /* Zaokrąglenie i usunięcie obramowania */
             border-radius: 1cm;
-            border: 1px solid rgba(255, 255, 255, 0.6);
+            border: none;
             
-            /* KLUCZ 2: Mocny, wyraźny cień, który podnosi kontener i nadaje głębi */
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            /* Zwarty, mocniejszy cień trzymający się blisko krawędzi */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
             
             z-index: 1000;
         }
