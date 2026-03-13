@@ -2,13 +2,13 @@ import streamlit as st
 
 # --- 1. MINIMALISTYCZNA KONFIGURACJA ---
 st.set_page_config(
-    page_title="Blank Hero - Fast SPA",
+    page_title="Blank Hero - Perfect Styling",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# --- 2. INTERFEJS (CSS + HTML + JS) ---
-def apply_fast_hero_layout():
+# --- 2. KONSTRUKCJA INTERFEJSU (Trik CSS) ---
+def apply_hero_layout():
     
     css_styles = """
     <style>
@@ -19,22 +19,30 @@ def apply_fast_hero_layout():
         display: none !important;
     }
 
+    /* Tło aplikacji */
     .stApp {
         background-color: #F0D3DE !important;
     }
 
-    /* KONTENER HERO */
+    /* KONTENER HERO - Wraca do oryginalnych wymiarów */
     #hero-canvas {
         position: fixed;
-        top: 1cm; bottom: 1cm; left: 1cm; right: 1cm;
+        top: 1cm;
+        bottom: 1cm;
+        left: 1cm;
+        right: 1cm;
+        
         background: rgba(255, 255, 255, 0.25);
         backdrop-filter: blur(25px) saturate(150%);
         -webkit-backdrop-filter: blur(25px) saturate(150%);
+        
         border-radius: 1cm;
+        border: none;
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        
         z-index: 1000;
-        padding: 100px 50px 50px 50px; /* Miejsce na treść poniżej nawigacji */
-        overflow-y: auto; /* Scrollowanie, jeśli treść jest długa */
+        overflow-y: auto;
+        padding: 100px 50px; /* Margines wewnętrzny dla treści */
     }
 
     /* --- NAWIGACJA --- */
@@ -48,8 +56,9 @@ def apply_fast_hero_layout():
         font-family: 'Poppins', sans-serif;
     }
 
-    .hero-nav a {
-        color: #1a1a1a !important;
+    /* Zmiana 'a' na 'label', żeby współpracowały z radio buttonami */
+    .hero-nav label {
+        color: #1a1a1a;
         text-decoration: none;
         font-size: 14px;
         font-weight: 500;
@@ -58,12 +67,12 @@ def apply_fast_hero_layout():
         transition: color 0.3s ease;
     }
 
-    .hero-nav a:hover {
-        color: #FF2A5F !important;
+    .hero-nav label:hover {
+        color: #FF2A5F;
     }
 
-    /* FALA */
-    .hero-nav a::after {
+    /* FALA - Domyślnie ukryta */
+    .hero-nav label::after {
         content: '';
         position: absolute;
         bottom: -10px;
@@ -76,21 +85,43 @@ def apply_fast_hero_layout():
         transition: opacity 0.3s ease;
     }
 
-    .hero-nav a.active::after {
+    /* Ikonka lupki */
+    .search-icon {
+        margin-left: -20px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+    }
+    .search-icon svg {
+        width: 18px;
+        height: 18px;
+        stroke: #1a1a1a;
+        stroke-width: 2;
+        transition: stroke 0.2s ease;
+    }
+    .search-icon:hover svg { stroke: #FF2A5F; }
+    .search-icon::after { display: none !important; }
+
+    /* UKRYWAMY RADIO BUTTONY */
+    input[name="hero-tabs"] {
+        display: none;
+    }
+
+    /* POKAZYWANIE FALI DLA AKTYWNEJ ZAKŁADKI (Magia CSS) */
+    #tab-home:checked ~ .hero-nav label[for="tab-home"]::after,
+    #tab-about:checked ~ .hero-nav label[for="tab-about"]::after,
+    #tab-services:checked ~ .hero-nav label[for="tab-services"]::after,
+    #tab-portfolio:checked ~ .hero-nav label[for="tab-portfolio"]::after,
+    #tab-contact:checked ~ .hero-nav label[for="tab-contact"]::after {
         opacity: 1;
     }
 
-    /* --- TREŚĆ ZAKŁADEK --- */
+    /* --- KONTENERY Z TREŚCIĄ --- */
     .tab-content {
-        display: none; /* Domyślnie ukrywamy wszystkie sekcje */
+        display: none;
         font-family: 'Poppins', sans-serif;
         color: #1a1a1a;
         animation: fadeIn 0.4s ease-in-out;
-    }
-
-    /* Klasa dla aktywnej sekcji */
-    .tab-content.active-content {
-        display: block;
     }
 
     @keyframes fadeIn {
@@ -98,69 +129,72 @@ def apply_fast_hero_layout():
         to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Usunięcie marginesów domyślnych Streamlit */
+    /* POKAZYWANIE TREŚCI ZALEŻNIE OD WYBRANEGO RADIO BUTTONA */
+    #tab-home:checked ~ #content-home,
+    #tab-about:checked ~ #content-about,
+    #tab-services:checked ~ #content-services,
+    #tab-portfolio:checked ~ #content-portfolio,
+    #tab-contact:checked ~ #content-contact {
+        display: block;
+    }
+
     .main .block-container { padding: 0 !important; }
     </style>
     """
 
-    # Struktura HTML z osadzonym skryptem JS
+    # Struktura HTML wykorzystująca radio-buttony i etykiety
     html_structure = """
     <div id="hero-canvas">
+        <input type="radio" id="tab-home" name="hero-tabs" checked>
+        <input type="radio" id="tab-about" name="hero-tabs">
+        <input type="radio" id="tab-services" name="hero-tabs">
+        <input type="radio" id="tab-portfolio" name="hero-tabs">
+        <input type="radio" id="tab-contact" name="hero-tabs">
+
         <nav class="hero-nav">
-            <a onclick="switchTab('home', this)" class="active">Home</a>
-            <a onclick="switchTab('about', this)">About</a>
-            <a onclick="switchTab('services', this)">Services</a>
-            <a onclick="switchTab('portfolio', this)">Portfolio</a>
-            <a onclick="switchTab('contact', this)">Contact</a>
+            <label for="tab-home">Home</label>
+            <label for="tab-about">About</label>
+            <label for="tab-services">Services</label>
+            <label for="tab-portfolio">Portfolio</label>
+            <label for="tab-contact">Contact</label>
+            
+            <div class="search-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </div>
         </nav>
 
-        <div id="home" class="tab-content active-content">
-            <h1>Witaj na stronie głównej 👋</h1>
-            <p>To jest błyskawiczna nawigacja bez przeładowywania.</p>
+        <div id="content-home" class="tab-content">
+            <h1>Cześć! 👋</h1>
+            <p>To jest Home. Design uratowany, a strona ani drgnie przy przełączaniu.</p>
         </div>
         
-        <div id="about" class="tab-content">
-            <h1>O nas 🚀</h1>
-            <p>Tutaj znajduje się treść zakładki About. Pojawia się natychmiast po kliknięciu!</p>
+        <div id="content-about" class="tab-content">
+            <h1>O mnie</h1>
+            <p>Tutaj wrzucisz informacje o sobie.</p>
         </div>
 
-        <div id="services" class="tab-content">
-            <h1>Usługi 🛠️</h1>
-            <p>Nasza oferta...</p>
+        <div id="content-services" class="tab-content">
+            <h1>Usługi</h1>
+            <p>Co oferujesz światu.</p>
         </div>
 
-        <div id="portfolio" class="tab-content">
-            <h1>Portfolio 🎨</h1>
-            <p>Zobacz nasze projekty.</p>
+        <div id="content-portfolio" class="tab-content">
+            <h1>Portfolio</h1>
+            <p>Twoje najlepsze projekty.</p>
         </div>
 
-        <div id="contact" class="tab-content">
-            <h1>Kontakt 📬</h1>
-            <p>Napisz do nas wiadomość.</p>
+        <div id="content-contact" class="tab-content">
+            <h1>Kontakt</h1>
+            <p>Zadzwoń do mnie.</p>
         </div>
     </div>
-
-    <script>
-    function switchTab(tabId, element) {
-        // 1. Usuń klasę 'active' ze wszystkich linków
-        const links = document.querySelectorAll('.hero-nav a');
-        links.forEach(link => link.classList.remove('active'));
-        
-        // 2. Dodaj klasę 'active' do klikniętego linku (uruchamia falę)
-        element.classList.add('active');
-
-        // 3. Ukryj wszystkie sekcje z treścią
-        const contents = document.querySelectorAll('.tab-content');
-        contents.forEach(content => content.classList.remove('active-content'));
-
-        // 4. Pokaż tylko wybraną sekcję
-        document.getElementById(tabId).classList.add('active-content');
-    }
-    </script>
     """
     
-    # Wstrzyknięcie całości do Streamlit
-    st.components.v1.html(css_styles + html_structure, height=1000, scrolling=False)
+    # Wracamy do st.markdown, co chroni cały układ
+    st.markdown(css_styles + html_structure, unsafe_allow_html=True)
 
 # Wywołanie układu
-apply_fast_hero_layout()
+apply_hero_layout()
