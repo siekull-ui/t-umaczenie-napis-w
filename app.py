@@ -7,10 +7,16 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- 2. KONSTRUKCJA INTERFEJSU (CSS + HTML) ---
+# --- 2. LOGIKA ZAKŁADEK (STAN APLIKACJI) ---
+# Pobieramy aktualną zakładkę z parametrów URL (domyślnie "Home")
+current_tab = st.query_params.get("tab", "Home")
+
+# Funkcja pomocnicza do dynamicznego nadawania klasy "active"
+def get_active_class(tab_name):
+    return 'class="active"' if current_tab == tab_name else ""
+
+# --- 3. KONSTRUKCJA INTERFEJSU (CSS + HTML) ---
 def apply_hero_layout():
-    
-    # Zmienna przechowująca wyłącznie style CSS
     css_styles = """
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap');
@@ -25,7 +31,7 @@ def apply_hero_layout():
         background-color: #F0D3DE !important;
     }
 
-    /* KONTENER HERO */
+    /* KONTENER HERO (Samo szklane tło) */
     #hero-canvas {
         position: fixed;
         top: 1cm;
@@ -46,13 +52,14 @@ def apply_hero_layout():
 
     /* --- NAWIGACJA --- */
     .hero-nav {
-        position: absolute;
-        top: 40px;
-        right: 50px;
+        position: fixed;
+        top: calc(1cm + 40px); /* Dopasowane do kontenera hero */
+        right: calc(1cm + 50px);
         display: flex;
         gap: 60px;
         align-items: center;
         font-family: 'Poppins', sans-serif;
+        z-index: 1002; /* Musi być na samym wierzchu, by było klikalne */
     }
 
     .hero-nav a {
@@ -64,7 +71,6 @@ def apply_hero_layout():
         position: relative;
     }
 
-    /* FALA - przygotowana tylko pod aktywne kliknięcie */
     .hero-nav a::after {
         content: '';
         position: absolute;
@@ -80,12 +86,10 @@ def apply_hero_layout():
         transition: opacity 0.3s ease;
     }
 
-    /* TYLKO AKTYWNA ZAKŁADKA MA FALĘ */
     .hero-nav a.active::after {
         opacity: 1;
     }
 
-    /* Ikonka lupki */
     .hero-nav .search-icon {
         margin-left: -20px;
         display: flex;
@@ -104,39 +108,74 @@ def apply_hero_layout():
         display: none; 
     }
 
-    /* Lupka reaguje na najechanie kursorem */
     .hero-nav .search-icon:hover svg {
         stroke: #FF2A5F; 
     }
 
-    /* Usunięcie marginesów domyślnych Streamlit */
+    /* Zapewnienie, że natywne elementy Streamlit będą nad szkłem */
     .main .block-container {
         padding: 0 !important;
+        position: relative;
+        z-index: 1001 !important; 
+    }
+    
+    /* Bezpieczny obszar na tekst pod nawigacją */
+    .content-area {
+        margin-top: 150px; 
+        padding-left: 2.5cm;
+        padding-right: 2.5cm;
+        font-family: 'Poppins', sans-serif;
     }
     </style>
     """
 
-    # Zmienna przechowująca wyłącznie strukturę HTML
-    html_structure = """
-    <div id="hero-canvas">
-        <nav class="hero-nav">
-            <a class="active">Home</a>
-            <a>About</a>
-            <a>Services</a>
-            <a>Portfolio</a>
-            <a>Contact</a>
-            <a class="search-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-            </a>
-        </nav>
-    </div>
+    # Linki mają teraz href i target="_self", co wywołuje błyskawiczne odświeżenie wewnątrz Streamlit
+    html_structure = f"""
+    <div id="hero-canvas"></div>
+    <nav class="hero-nav">
+        <a href="?tab=Home" target="_self" {get_active_class("Home")}>Home</a>
+        <a href="?tab=About" target="_self" {get_active_class("About")}>About</a>
+        <a href="?tab=Services" target="_self" {get_active_class("Services")}>Services</a>
+        <a href="?tab=Portfolio" target="_self" {get_active_class("Portfolio")}>Portfolio</a>
+        <a href="?tab=Contact" target="_self" {get_active_class("Contact")}>Contact</a>
+        <a class="search-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+        </a>
+    </nav>
     """
 
-    # Wstrzyknięcie połączonego CSS i HTML do aplikacji
     st.markdown(css_styles + html_structure, unsafe_allow_html=True)
 
-# Wywołanie układu
+# Uruchamiamy stylizację
 apply_hero_layout()
+
+
+# --- 4. WYŚWIETLANIE TREŚCI W ZALEŻNOŚCI OD ZAKŁADKI ---
+# Otwieramy dedykowany kontener, żeby tekst ładnie układał się pod nawigacją
+st.markdown("<div class='content-area'>", unsafe_allow_html=True)
+
+if current_tab == "Home":
+    st.title("Witaj w Blank Hero")
+    st.write("Wybierz zakładkę z menu powyżej, aby nawigować po stronie.")
+    
+elif current_tab == "About":
+    st.title("O mnie")
+    st.write("Student pielęgniarstwa (rocznik 2025). Tutaj gromadzę materiały z zajęć, notatki kliniczne i projekty medyczne.")
+    
+elif current_tab == "Services":
+    st.title("Usługi")
+    st.write("Miejsce na listę usług lub specjalizacji.")
+    
+elif current_tab == "Portfolio":
+    st.title("Portfolio")
+    st.write("Galeria projektów i certyfikatów.")
+    
+elif current_tab == "Contact":
+    st.title("Kontakt")
+    st.text_input("Zostaw wiadomość:", placeholder="Napisz do mnie...")
+    st.button("Wyślij")
+
+st.markdown("</div>", unsafe_allow_html=True)
