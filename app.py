@@ -8,24 +8,24 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- 2. GŁÓWNY STYL CSS ---
-def apply_styles():
+# --- 2. GŁÓWNY STYL CSS (TŁO + GUMOWY KONTENER) ---
+def apply_elastic_layout():
     style = """
     <style>
-    /* Ukrycie elementów systemowych */
+    /* Ukrycie elementów systemowych Streamlit */
     [data-testid="stHeader"], 
     [data-testid="stFooter"], 
     [data-testid="stToolbar"] {
         display: none !important;
     }
 
-    /* Reset kontenera głównego Streamlit */
+    /* Reset głównego kontenera */
     .main .block-container {
         padding: 0 !important;
         max-width: 100% !important;
     }
 
-    /* Animacja tła (Twoje nieskończone tło) */
+    /* Nieskończone, animowane tło */
     @keyframes panBackground {
         0% { background-position: 0% 0%; }
         50% { background-position: 100% 100%; }
@@ -45,46 +45,54 @@ def apply_styles():
         animation: panBackground 40s infinite ease-in-out;
     }
 
-    /* --- GUMOWY KONTENER GLASSMORPHISM --- */
-    .glass-canvas {
+    /* --- SPRĘŻYSTY KONTENER GLASSMORPHISM --- */
+    .elastic-glass-canvas {
+        /* Pozycjonowanie 1cm od każdej krawędzi */
         position: fixed;
         top: 1cm;
         left: 1cm;
         right: 1cm;
         bottom: 1cm;
         
-        /* Glassmorphism setup */
-        background: rgba(255, 255, 255, 0.07); /* Przepuszczalność ~90% */
-        backdrop-filter: blur(40px) saturate(150%);
-        -webkit-backdrop-filter: blur(40px) saturate(150%);
+        /* Wygląd: Glassmorphism (90% przepuszczalności) */
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(45px) saturate(160%);
+        -webkit-backdrop-filter: blur(45px) saturate(160%);
         
-        /* Detale wykończenia */
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 30px;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        /* Obramowanie i cień */
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 35px;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
         
-        /* Efekt "gumy" - płynne przejście przy zmianie rozmiaru okna */
-        transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        /* EFEKT GUMY (SPRĘŻYSTOŚĆ) */
+        /* Ten bezier sprawia, że ruch jest "żywy" i lekko odbija */
+        transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         
         z-index: 100;
         overflow: hidden;
     }
 
-    /* Subtelne rozświetlenie krawędzi (detal) */
-    .glass-canvas::before {
+    /* Dodatkowa interakcja przy najechaniu (poczucie elastyczności) */
+    .elastic-glass-canvas:hover {
+        transform: scale(1.005); /* Minimalne powiększenie */
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    /* Subtelne rozświetlenie góry dla lepszego detalu 3D */
+    .elastic-glass-canvas::after {
         content: "";
         position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        border-radius: 30px;
-        background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+        top: 0; left: 0; right: 0; height: 100px;
+        background: linear-gradient(to bottom, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
         pointer-events: none;
     }
     </style>
     
-    <div class="glass-canvas">
+    <div class="elastic-glass-canvas">
         </div>
     """
     st.markdown(style, unsafe_allow_html=True)
 
-# Wywołanie stylu
-apply_styles()
+# Wywołanie interfejsu
+apply_elastic_layout()
