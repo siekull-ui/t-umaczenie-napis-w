@@ -1,58 +1,59 @@
 import streamlit as st
 
-# --- 1. CONFIG ---
+# --- 1. MINIMALISTYCZNA KONFIGURACJA ---
 st.set_page_config(
     page_title="Blank Hero",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# --- 2. CSS: HERO GLASS CONTAINER ---
-st.markdown("""
-    <style>
-    /* Ukrycie elementów systemowych */
-    [data-testid="stHeader"], [data-testid="stFooter"], [data-testid="stToolbar"] {
-        display: none !important;
-    }
+# --- 2. KONSTRUKCJA INTERFEJSU (CSS + HTML) ---
+def apply_hero_layout():
+    st.markdown("""
+        <style>
+        /* Ukrycie elementów systemowych Streamlit */
+        [data-testid="stHeader"], [data-testid="stFooter"], [data-testid="stToolbar"] {
+            display: none !important;
+        }
 
-    /* Różowe tło bazowe */
-    .stApp {
-        background-color: #F0D3DE !important;
-    }
+        /* Tło aplikacji - Pełny róż */
+        .stApp {
+            background-color: #F0D3DE !important;
+        }
 
-    /* Stylizacja głównego obszaru jako satynowy kontener Hero */
-    [data-testid="stAppViewBlockContainer"] {
-        /* Kolor i przezroczystość */
-        background: rgba(255, 255, 255, 0.9) !important;
-        
-        /* Glassmorphism / Satyna */
-        backdrop-filter: blur(30px) !important;
-        -webkit-backdrop-filter: blur(30px) !important;
-        
-        /* Marginesy i zaokrąglenie */
-        margin: 1cm !important;
-        border-radius: 1cm !important;
-        
-        /* Dopasowanie do ekranu */
-        min-height: calc(100vh - 2cm) !important;
-        width: calc(100% - 2cm) !important;
-        
-        /* Obramowanie dla widoczności krawędzi (efekt szkła) */
-        border: 1px solid rgba(255, 255, 255, 0.6) !important;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05) !important;
-        
-        /* Reset paddingów Streamlit */
-        padding: 0 !important;
-    }
+        /* KONTENER HERO - Stylizacja satynowa */
+        #hero-canvas {
+            position: fixed;
+            top: 1cm;
+            bottom: 1cm;
+            left: 1cm;
+            right: 1cm;
+            
+            /* Jasne tło 90% przepustowości */
+            background: rgba(255, 255, 255, 0.9);
+            
+            /* Efekt Glassmorphism / Satyna */
+            backdrop-filter: blur(25px) saturate(160%);
+            -webkit-backdrop-filter: blur(25px) saturate(160%);
+            
+            /* Zaokrąglenie 1cm i obramowanie */
+            border-radius: 1cm;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            
+            /* Cień dla głębi */
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+            
+            z-index: 1000;
+        }
 
-    /* Usunięcie ograniczenia szerokości narzucanego przez Streamlit */
-    .main .block-container {
-        max-width: 100% !important;
-    }
-    </style>
+        /* Usunięcie marginesów domyślnych Streamlit, aby nie przesuwały widoku */
+        .main .block-container {
+            padding: 0 !important;
+        }
+        </style>
+
+        <div id="hero-canvas"></div>
     """, unsafe_allow_html=True)
 
-# --- 3. INICJACJA KONTENERA ---
-# Dodajemy pusty kontener, aby wymusić renderowanie stylów
-with st.container():
-    st.write("")
+# Wywołanie układu
+apply_hero_layout()
