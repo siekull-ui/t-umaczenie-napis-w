@@ -48,46 +48,45 @@ def apply_hero_layout():
             top: 40px;
             right: 50px;
             display: flex;
-            gap: 60px; /* PODWOJONY ODSTĘP (było 30px) */
+            gap: 60px;
             align-items: center;
             font-family: 'Poppins', sans-serif;
         }
 
         .hero-nav a {
-            color: #1a1a1a !important; /* Zawsze ciemny kolor liter */
-            text-decoration: none; /* Usunięcie domyślnego podkreślenia */
+            color: #1a1a1a !important;
+            text-decoration: none;
             font-size: 14px;
             font-weight: 500;
             cursor: pointer;
-            position: relative; /* Konieczne do pozycjonowania fali */
+            position: relative;
+            /* Usunięto transition dla koloru, jeśli nie ma efektu hover na tekście */
         }
 
-        /* WŁASNA, ŁAGODNA I ROZCIĄGNIĘTA FALA */
+        /* FALA - przygotowana tylko pod aktywne kliknięcie */
         .hero-nav a::after {
             content: '';
             position: absolute;
-            bottom: -10px; /* Odsunięcie fali w dół od tekstu */
-            left: -15px;   /* Rozciągnięcie fali w lewo (ok. 2 znaki) */
-            right: -15px;  /* Rozciągnięcie fali w prawo */
+            bottom: -10px;
+            left: -15px;
+            right: -15px;
             height: 6px;
             
-            /* Delikatna fala narysowana w SVG z kolorem dzikiego różu (#FF2A5F) */
             background-image: url("data:image/svg+xml,%3Csvg width='30' height='6' viewBox='0 0 30 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 3C5 1 10 1 15 3C20 5 25 5 30 3' stroke='%23FF2A5F' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-            background-repeat: repeat-x; /* Powtarzanie wzoru fali */
+            background-repeat: repeat-x;
             
-            opacity: 0; /* Domyślnie ukryte */
-            transition: opacity 0.3s ease; /* Płynne pojawianie się */
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
-        /* Pokaż falę po najechaniu myszką oraz dla aktywnego elementu */
-        .hero-nav a:hover::after, 
+        /* TYLKO AKTYWNA ZAKŁADKA MA FALĘ (usunięto a:hover::after) */
         .hero-nav a.active::after {
             opacity: 1;
         }
 
         /* Ikonka lupki */
         .hero-nav .search-icon {
-            margin-left: -20px; /* Drobna korekta odstępu lupki od ostatniego słowa */
+            margin-left: -20px;
             display: flex;
             align-items: center;
         }
@@ -100,11 +99,11 @@ def apply_hero_layout():
             transition: stroke 0.2s ease;
         }
 
-        /* Usunięcie fali pod lupką */
         .hero-nav a.search-icon::after {
             display: none; 
         }
 
+        /* Lupka nadal reaguje na najechane - opcjonalne, dla UX */
         .hero-nav .search-icon:hover svg {
             stroke: #FF2A5F; 
         }
