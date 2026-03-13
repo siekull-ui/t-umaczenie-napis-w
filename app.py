@@ -13,7 +13,6 @@ def get_base64_of_bin_file(bin_file):
 def set_background(png_file):
     try:
         bin_str = get_base64_of_bin_file(png_file)
-        # Dodajemy animację 'panBackground', która płynnie przesuwa powiększone tło
         page_bg_img = f'''
         <style>
         @keyframes panBackground {{
@@ -26,7 +25,6 @@ def set_background(png_file):
             background-image: url("data:image/png;base64,{bin_str}");
             background-repeat: no-repeat;
             background-attachment: fixed;
-            /* Uruchomienie animacji: 60 sekund, w kółko, płynnie */
             animation: panBackground 60s infinite alternate ease-in-out;
         }}
         </style>
@@ -37,20 +35,17 @@ def set_background(png_file):
 
 # 1. Konfiguracja strony
 st.set_page_config(page_title="AI Document Translator", page_icon="✨", layout="wide")
-
-# Wczytanie grafiki i odpalenie animacji ruchu
 set_background('background.jpg')
 
 # 2. Konfiguracja DeepL
 AUTH_KEY = "09d9dd8f-b8c5-45e6-be4f-dab5b623c368:fx"
 translator = deepl.Translator(AUTH_KEY)
 
-# 3. CSS - Jasny Glassmorphism, 3D Cienie i Ruch
+# 3. CSS - Ulepszony obszar zrzutu i głębia 3D
 css = """
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
 
-/* Reset globalny fontu i koloru (ciemny grafit dla czytelności na szkle) */
 * {
     font-family: 'Inter', sans-serif;
     color: #1e293b !important; 
@@ -60,10 +55,9 @@ css = """
     display: none;
 }
 
-/* GŁÓWNA NAKŁADKA - Jasne, czyste szkło zamiast ciemnego */
 [data-testid="stAppViewContainer"] {
-    background: rgba(255, 255, 255, 0.15); /* Bardzo delikatna biel */
-    backdrop-filter: blur(35px); /* Rozmycie tła */
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(35px);
     -webkit-backdrop-filter: blur(35px);
 }
 
@@ -73,7 +67,6 @@ css = """
     padding-bottom: 8vh !important;
 }
 
-/* Nowoczesny Tytuł z gradientem dopasowanym do jasnego motywu */
 h1 {
     font-weight: 800 !important;
     font-size: 3.5rem !important;
@@ -82,25 +75,22 @@ h1 {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 0.2rem !important;
-    text-shadow: 0 10px 30px rgba(99, 102, 241, 0.2); /* Lekka poświata */
+    text-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
 }
 
 .stMarkdown p {
     text-align: center;
     font-size: 1.15rem;
-    color: #475569 !important; /* Zgaszony granat dla podtytułu */
+    color: #475569 !important;
     font-weight: 400;
     margin-bottom: 2.5rem !important;
 }
 
-/* --- KONTENERY INTERFEJSU (Głębia i brak czerni) --- */
-
-/* Selectbox */
 .stSelectbox div[data-baseweb="select"] {
     background: rgba(255, 255, 255, 0.4) !important;
     border: 1px solid rgba(255, 255, 255, 0.6) !important;
     border-radius: 16px !important;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1) !important; /* Efekt głębi */
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1) !important;
     transition: all 0.3s ease;
 }
 .stSelectbox div[data-baseweb="select"]:hover {
@@ -108,27 +98,47 @@ h1 {
     box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.15) !important;
 }
 
-/* Uploader plików */
+/* --- POTĘŻNY DROPZONE (Obszar wrzucania plików) --- */
 .stFileUploader section {
-    background: rgba(255, 255, 255, 0.3) !important;
-    border: 2px dashed rgba(99, 102, 241, 0.4) !important;
-    border-radius: 20px !important;
-    padding: 35px !important;
-    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.5), 0 10px 30px rgba(0, 0, 0, 0.05) !important; /* Głębia do wewnątrz i na zewnątrz */
-    transition: all 0.3s ease;
+    min-height: 300px !important; /* Zamienia pasek w wielki kwadrat/prostokąt */
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    background: rgba(255, 255, 255, 0.25) !important;
+    border: 3px dashed rgba(99, 102, 241, 0.5) !important;
+    border-radius: 24px !important;
+    box-shadow: inset 0 0 30px rgba(255, 255, 255, 0.5), 0 15px 40px rgba(0, 0, 0, 0.08) !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    cursor: pointer !important;
 }
+
 .stFileUploader section:hover {
     background: rgba(255, 255, 255, 0.5) !important;
     border-color: #6366f1 !important;
-    transform: translateY(-2px);
-    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.6), 0 15px 40px rgba(0, 0, 0, 0.1) !important;
+    transform: scale(1.02); /* Delikatne powiększenie (efekt pop-up) */
+    box-shadow: inset 0 0 50px rgba(255, 255, 255, 0.7), 0 20px 50px rgba(0, 0, 0, 0.12) !important;
 }
 
-/* Przycisk akcji */
+/* Ukrycie standardowych, brzydkich napisów wewnątrz dropzone */
+.stFileUploader section > div > span,
+.stFileUploader section > div > small {
+    display: none !important;
+}
+
+/* Powiększenie i dodanie cienia do samej ikony chmury */
+.stFileUploader section svg {
+    width: 100px !important;
+    height: 100px !important;
+    color: #6366f1 !important;
+    filter: drop-shadow(0 10px 15px rgba(99, 102, 241, 0.4));
+    margin-bottom: 10px;
+}
+
 .stButton button {
     width: 100%;
     background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%) !important;
-    color: white !important; /* Tu wymuszamy biel, żeby napis na przycisku był widoczny */
+    color: white !important; 
     border: none !important;
     padding: 16px 24px !important;
     border-radius: 16px !important;
@@ -143,7 +153,6 @@ h1 {
     box-shadow: 0 20px 35px -10px rgba(168, 85, 247, 0.7), inset 0 2px 5px rgba(255, 255, 255, 0.4) !important;
 }
 
-/* Podgląd tekstu */
 .stTextArea textarea {
     background: rgba(255, 255, 255, 0.4) !important;
     border: 1px solid rgba(255, 255, 255, 0.7) !important;
@@ -152,17 +161,14 @@ h1 {
     color: #334155 !important;
 }
 
-/* Powiadomienia (Alerts) */
 .stAlert {
     background: rgba(255, 255, 255, 0.6) !important;
     border: 1px solid rgba(255, 255, 255, 0.8) !important;
-    border-left: 5px solid #10b981 !important; /* Zielony pasek boczny dla sukcesu */
+    border-left: 5px solid #10b981 !important; 
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
     border-radius: 16px !important;
 }
-
-/* Powiadomienie błędu (nadpisanie paska) */
-.stAlert:has(.st-emotion-cache-1kqow14) { /* Klasa błędu Streamlit */
+.stAlert:has(.st-emotion-cache-1kqow14) { 
     border-left-color: #ef4444 !important;
 }
 </style>
@@ -185,7 +191,8 @@ target_languages = {
 selected_lang = st.selectbox("Wybierz język docelowy:", list(target_languages.keys()))
 target_code = target_languages[selected_lang]
 
-uploaded_file = st.file_uploader("Przeciągnij i upuść plik tutaj", type=["txt", "srt"])
+# Ukrywamy główny label ustawiając "label_visibility"
+uploaded_file = st.file_uploader(" ", type=["txt", "srt"], label_visibility="collapsed")
 
 if uploaded_file is not None:
     file_ext = uploaded_file.name.split('.')[-1].lower()
