@@ -7,7 +7,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- 2. KONSTRUKCJA INTERFEJSU (CSS + HTML) ---
+# --- 2. KONSTRUKCJA INTERFEJSU (CSS + HTML wewnątrz st.markdown) ---
 def apply_hero_layout():
     st.markdown("""
         <style>
@@ -23,7 +23,7 @@ def apply_hero_layout():
             background-color: #F0D3DE !important;
         }
 
-        /* UKRYTE WEJŚCIA STERUJĄCE LOGIKĄ (Niewidoczne dla użytkownika) */
+        /* UKRYTE WEJŚCIA STERUJĄCE LOGIKĄ */
         input[type="radio"], input[type="checkbox"] {
             display: none;
         }
@@ -45,7 +45,7 @@ def apply_hero_layout():
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
             
             z-index: 1000;
-            overflow: hidden; /* Utrzymuje elementy wewnątrz zaokrągleń */
+            overflow: hidden;
         }
 
         /* --- NAWIGACJA GŁÓWNA --- */
@@ -55,7 +55,7 @@ def apply_hero_layout():
             right: 50px;
             display: flex;
             align-items: center;
-            justify-content: flex-end; /* Elementy wyrównane do prawej */
+            justify-content: flex-end;
             font-family: 'Poppins', sans-serif;
             z-index: 100;
         }
@@ -64,7 +64,6 @@ def apply_hero_layout():
             display: flex;
             gap: 60px;
             align-items: center;
-            /* Płynne przesuwanie w lewo po rozwinięciu lupy */
             transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -103,17 +102,16 @@ def apply_hero_layout():
         .search-container {
             display: flex;
             align-items: center;
-            margin-left: 60px; /* Odstęp od ostatniego napisu */
+            margin-left: 60px;
             background: rgba(255, 255, 255, 0);
-            border-radius: 30px; /* Mocne zaokrąglenia dla kontenerka */
+            border-radius: 30px;
             padding: 0;
-            /* Ultra-płynna animacja całego kontenera */
             transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
             overflow: hidden;
         }
 
         .search-input {
-            width: 0; /* Domyślnie schowany */
+            width: 0;
             opacity: 0;
             border: none;
             background: transparent;
@@ -133,7 +131,7 @@ def apply_hero_layout():
             cursor: pointer;
             display: flex;
             align-items: center;
-            padding: 8px; /* Zwiększony obszar kliknięcia */
+            padding: 8px;
             border-radius: 50%;
             transition: background 0.3s ease;
         }
@@ -148,24 +146,23 @@ def apply_hero_layout():
 
         /* EFEKT PO KLIKNIĘCIU W LUPKĘ */
         #search-toggle:checked ~ .hero-nav .search-container {
-            background: #ffffff; /* Białe tło po wysunięciu */
+            background: #ffffff;
             padding: 2px 15px 2px 20px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            /* Zmniejszamy trochę margines, by płynniej pchnąć menu */
             margin-left: 40px; 
         }
 
         #search-toggle:checked ~ .hero-nav .search-container .search-input {
-            width: 160px; /* Pole się rozszerza */
-            opacity: 1; /* Pojawia się */
+            width: 160px;
+            opacity: 1;
             padding-right: 10px;
         }
 
         #search-toggle:checked ~ .hero-nav .search-container .search-icon-label svg {
-            stroke: #FF2A5F; /* Zmiana koloru lupy na aktywny */
+            stroke: #FF2A5F;
         }
 
-        /* --- STREFA ZAWARTOŚCI NA ŚRODKU (1, 2, 3, 4, 5) --- */
+        /* --- STREFA ZAWARTOŚCI NA ŚRODKU --- */
         .content-area {
             position: absolute;
             top: 50%;
@@ -173,19 +170,18 @@ def apply_hero_layout():
             transform: translate(-50%, -50%);
             width: 100%;
             height: 100%;
-            pointer-events: none; /* Żeby liczby nie blokowały kliknięć np. pod spodem */
+            pointer-events: none;
         }
 
         .content-item {
             position: absolute;
             top: 50%;
             left: 50%;
-            /* Zaczynamy animację lekko z dołu (-45%) dla efektu wypłynięcia */
             transform: translate(-50%, -45%); 
             font-family: 'Poppins', sans-serif;
             font-size: 150px;
-            font-weight: 300; /* Cienki, nowoczesny wariant */
-            color: rgba(26, 26, 26, 0.8); /* Lekko prześwitujący grafit */
+            font-weight: 300;
+            color: rgba(26, 26, 26, 0.8);
             opacity: 0;
             transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
         }
@@ -197,7 +193,7 @@ def apply_hero_layout():
         #tab-4:checked ~ .content-area #content-4,
         #tab-5:checked ~ .content-area #content-5 {
             opacity: 1;
-            transform: translate(-50%, -50%); /* Liczba wjeżdża idealnie na środek */
+            transform: translate(-50%, -50%);
         }
 
         /* Usunięcie domyślnych zachowań Streamlit */
@@ -246,5 +242,5 @@ def apply_hero_layout():
         </div>
     """, unsafe_allow_html=True)
 
-# Wywołanie układu
+# Wywołanie interfejsu
 apply_hero_layout()
