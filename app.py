@@ -1,13 +1,13 @@
 import streamlit as st
 
-# --- 1. KONFIGURACJA STRONY ---
+# --- 1. KONFIGURACJA ---
 st.set_page_config(
-    page_title="Satin Glass UI",
+    page_title="Blank",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# --- 2. STYLIZACJA CSS (GLASSMORPHISM) ---
+# --- 2. CZYSTY INTERFEJS GLASSMORPHISM ---
 st.markdown("""
     <style>
     /* Ukrycie elementów systemowych */
@@ -15,48 +15,41 @@ st.markdown("""
         display: none !important;
     }
 
-    /* Tło całej aplikacji */
+    /* Tło aplikacji */
     .stApp {
         background-color: #F0D3DE !important;
-        overflow: hidden; /* Zapobiega pojawianiu się pasków przewijania strony głównej */
+        overflow: hidden;
     }
 
-    /* Główny kontener - Efekt Glassmorphism */
+    /* Główny kontener "Hero" */
     .main .block-container {
-        /* Kolor jasny, 90% przezroczystości (0.9) */
+        /* Stylistyka: Jasny, 90% krycia + Blur */
         background: rgba(255, 255, 255, 0.9) !important;
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
         
-        /* Efekt satynowy/blur */
-        backdrop-filter: blur(15px);
-        -webkit-backdrop-filter: blur(15px);
-        
-        /* Geometria: marginesy 1cm i dopasowanie do ekranu */
+        /* Geometria: Marginesy 1cm i dopasowanie do ekranu */
         margin: 1cm !important;
-        padding: 2rem !important; /* Wewnętrzny odstęp dla treści */
         border-radius: 1cm !important;
         
-        /* Dynamiczne dopasowanie wysokości i szerokości */
-        height: calc(100vh - 2cm) !important;
+        /* Precyzyjne wymiary */
         min-height: calc(100vh - 2cm) !important;
+        height: calc(100vh - 2cm) !important;
         max-width: calc(100% - 2cm) !important;
         
-        /* Delikatne obramowanie i cień dla podbicia efektu glass */
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+        /* Detale wykończenia */
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.03);
         
-        /* Centrowanie zawartości w pionie/poziomie (opcjonalnie) */
-        display: flex;
-        flex-direction: column;
+        /* Reset paddingów Streamlit */
+        padding: 0 !important;
     }
 
-    /* Resetowanie domyślnych marginesów Streamlit dla elementów wewnątrz */
+    /* Usunięcie domyślnych odstępów pionowych */
     [data-testid="stVerticalBlock"] {
-        gap: 1rem;
+        gap: 0 !important;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 3. TREŚĆ ---
-st.title("Satynowy Interfejs")
-st.write("Ten kontener idealnie przylega do krawędzi z zachowaniem 1-centymetrowego odstępu.")
-st.info("Efekt 'Matte' jest najlepiej widoczny, gdy pod kontenerem znajdują się jakieś kształty lub gdy zmienisz kolor tła na gradient.")
+# Kontener jest teraz gotowy i pusty.
