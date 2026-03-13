@@ -8,8 +8,8 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- 2. PRESTIŻOWY INTERFEJS (STACJONARNA STRZAŁKA) ---
-def apply_fixed_arrow_layout():
+# --- 2. INTERFEJS Z MAGNETYCZNĄ FIZYKĄ ---
+def apply_magnetic_layout():
     style = """
     <style>
     /* UKRYCIE ELEMENTÓW SYSTEMOWYCH */
@@ -28,25 +28,23 @@ def apply_fixed_arrow_layout():
         background: linear-gradient(135deg, #1e1121 0%, #2d1b33 25%, #e8a2a8 50%, #2d1b33 75%, #1e1121 100%) !important;
         background-size: 400% 400% !important;
         animation: panBackground 40s infinite ease-in-out;
+        perspective: 1000px; /* Wymagane dla efektu 3D */
     }
 
-    /* KONFIGURACJA ZMIENNYCH */
     :root {
         --sidebar-width: 320px;
         --margin: 1cm;
         --elastic-curve: cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    #sidebar-checkbox {
-        display: none;
-    }
+    #sidebar-checkbox { display: none; }
 
-    /* --- PANEL BOCZNY --- */
+    /* PANEL BOCZNY */
     #custom-sidebar {
         position: fixed;
         top: var(--margin);
         bottom: var(--margin);
-        left: calc(-1 * var(--sidebar-width) - 2cm); /* Ukryty */
+        left: calc(-1 * var(--sidebar-width) - 2cm);
         width: var(--sidebar-width);
         background: rgba(255, 255, 255, 0.08);
         backdrop-filter: blur(40px) saturate(150%);
@@ -57,7 +55,7 @@ def apply_fixed_arrow_layout():
         z-index: 1000;
     }
 
-    /* --- GŁÓWNY KONTENER --- */
+    /* GŁÓWNY KONTENER Z EFEKTEM MAGNETYCZNYM */
     #main-canvas {
         position: fixed;
         top: var(--margin);
@@ -69,17 +67,20 @@ def apply_fixed_arrow_layout():
         -webkit-backdrop-filter: blur(45px) saturate(160%);
         border: 1px solid rgba(255, 255, 255, 0.25);
         border-radius: 35px;
-        transition: left 0.8s var(--elastic-curve);
         z-index: 500;
         box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        
+        /* Płynny powrót do bazy po zabraniu kursora */
+        transition: left 0.8s var(--elastic-curve), transform 0.2s ease-out;
+        transform-style: preserve-3d;
     }
 
-    /* --- STACJONARNA STRZAŁKA (PRESTIGE LOOK) --- */
+    /* STRZAŁKA */
     .toggle-label {
         position: fixed;
-        left: 0.35cm; /* Stała pozycja w marginesie */
+        left: 0.35cm;
         top: 50%;
-        transform: translateY(-50%); /* Tylko wyśrodkowanie w pionie */
+        transform: translateY(-50%);
         cursor: pointer;
         z-index: 2500;
         color: rgba(255, 255, 255, 0.4);
@@ -87,40 +88,45 @@ def apply_fixed_arrow_layout():
         font-weight: 100;
         font-family: serif;
         user-select: none;
-        
-        /* Animujemy tylko obrót i kolor, 'left' zostaje stały */
         transition: transform 0.6s var(--elastic-curve), color 0.3s ease;
     }
 
-    .toggle-label:hover {
-        color: rgba(255, 255, 255, 1);
-        text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-    }
-
-    /* --- LOGIKA DYNAMIKI --- */
-    
-    #sidebar-checkbox:checked ~ #custom-sidebar {
-        left: var(--margin);
-    }
-
-    #sidebar-checkbox:checked ~ #main-canvas {
-        left: calc(var(--sidebar-width) + var(--margin) + 0.5cm);
-    }
-
-    /* Strzałka obraca się o 180 stopni w swojej stałej pozycji */
-    #sidebar-checkbox:checked ~ .toggle-label {
-        transform: translateY(-50%) rotate(180deg);
-        color: rgba(255, 255, 255, 0.7);
-    }
+    /* LOGIKA SQUEEZE */
+    #sidebar-checkbox:checked ~ #custom-sidebar { left: var(--margin); }
+    #sidebar-checkbox:checked ~ #main-canvas { left: calc(var(--sidebar-width) + var(--margin) + 0.5cm); }
+    #sidebar-checkbox:checked ~ .toggle-label { transform: translateY(-50%) rotate(180deg); }
     </style>
 
     <input type="checkbox" id="sidebar-checkbox">
     <label for="sidebar-checkbox" class="toggle-label">›</label>
-    
     <div id="custom-sidebar"></div>
     <div id="main-canvas"></div>
+
+    <script>
+    const canvas = document.getElementById('main-canvas');
+    
+    document.addEventListener('mousemove', (e) => {
+        const x = e.clientX;
+        const y = e.clientY;
+        
+        // Obliczanie środka ekranu
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+        
+        // Obliczanie wychylenia (im dalej od środka, tym większy kąt, ale z umiarem)
+        const rotateX = (centerY - y) / 50; 
+        const rotateY = (x - centerX) / 80;
+
+        // Zastosowanie magnetycznego wygięcia
+        canvas.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    });
+
+    // Powrót do stanu idealnego, gdy myszka opuści okno
+    document.addEventListener('mouseleave', () => {
+        canvas.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
+    });
+    </script>
     """
     st.markdown(style, unsafe_allow_html=True)
 
-# Wywołanie interfejsu
-apply_fixed_arrow_layout()
+apply_magnetic_layout()
