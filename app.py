@@ -9,7 +9,7 @@ st.set_page_config(
 )
 
 # --- 2. KOMPLETNY INTERFEJS (CSS + HTML) ---
-def apply_fixed_layout():
+def apply_minimalist_layout():
     style = """
     <style>
     /* UKRYCIE ELEMENTÓW SYSTEMOWYCH */
@@ -37,7 +37,6 @@ def apply_fixed_layout():
         --elastic-curve: cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    /* UKRYTY CHECKBOX DO OBSŁUGI KLIKNIĘCIA */
     #sidebar-checkbox {
         display: none;
     }
@@ -47,7 +46,7 @@ def apply_fixed_layout():
         position: fixed;
         top: var(--margin);
         bottom: var(--margin);
-        left: calc(-1 * var(--sidebar-width) - 2cm); /* Ukryty */
+        left: calc(-1 * var(--sidebar-width) - 2cm);
         width: var(--sidebar-width);
         background: rgba(255, 255, 255, 0.08);
         backdrop-filter: blur(40px) saturate(150%);
@@ -56,7 +55,6 @@ def apply_fixed_layout():
         border-radius: 30px;
         transition: all 0.8s var(--elastic-curve);
         z-index: 1000;
-        box-shadow: 15px 0 40px rgba(0,0,0,0.2);
     }
 
     /* GŁÓWNY KONTENER */
@@ -76,37 +74,32 @@ def apply_fixed_layout():
         box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
     }
 
-    /* STRZAŁKA (LABEL DLA CHECKBOXA) */
-    @keyframes pulse-ring {
-        0% { transform: translateY(-50%) scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
-        70% { transform: translateY(-50%) scale(1.1); box-shadow: 0 0 0 15px rgba(255, 255, 255, 0); }
-        100% { transform: translateY(-50%) scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
-    }
-
+    /* MINIMALISTYCZNA STRZAŁKA (LABEL) */
     .toggle-label {
         position: fixed;
-        left: 20px;
+        /* Umiejscowienie wewnątrz marginesu 1cm */
+        left: 0.35cm; 
         top: 50%;
         transform: translateY(-50%);
-        width: 45px;
-        height: 45px;
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.4);
-        border-radius: 50%;
+        cursor: pointer;
+        z-index: 2000;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 40px;
+        font-weight: 100; /* Bardzo cienka */
+        font-family: serif; /* Dla ładniejszego kształtu '>' */
+        transition: all 0.8s var(--elastic-curve);
+        user-select: none;
         display: flex;
         align-items: center;
         justify-content: center;
-        cursor: pointer;
-        z-index: 2000;
-        color: white;
-        font-size: 22px;
-        animation: pulse-ring 2s infinite ease-in-out;
-        transition: all 0.6s var(--elastic-curve);
-        user-select: none;
     }
 
-    /* --- LOGIKA DYNAMIKI (Gdy checkbox jest zaznaczony) --- */
+    .toggle-label:hover {
+        color: white;
+        transform: translateY(-50%) scale(1.2);
+    }
+
+    /* LOGIKA DYNAMIKI */
     
     #sidebar-checkbox:checked ~ #custom-sidebar {
         left: var(--margin);
@@ -117,18 +110,15 @@ def apply_fixed_layout():
     }
 
     #sidebar-checkbox:checked ~ .toggle-label {
-        left: calc(var(--sidebar-width) + var(--margin) + 15px);
+        /* Przesunięcie do marginesu między panelem a kontenerem */
+        left: calc(var(--sidebar-width) + var(--margin) + 0.1cm);
         transform: translateY(-50%) rotate(180deg);
-        background: rgba(255, 255, 255, 0.3);
-    }
-
-    .toggle-label:hover {
-        background: rgba(255, 255, 255, 0.4);
+        color: rgba(255, 255, 255, 0.8);
     }
     </style>
 
     <input type="checkbox" id="sidebar-checkbox">
-    <label for="sidebar-checkbox" class="toggle-label">❯</label>
+    <label for="sidebar-checkbox" class="toggle-label">›</label>
     
     <div id="custom-sidebar"></div>
     <div id="main-canvas"></div>
@@ -136,4 +126,4 @@ def apply_fixed_layout():
     st.markdown(style, unsafe_allow_html=True)
 
 # Wywołanie interfejsu
-apply_fixed_layout()
+apply_minimalist_layout()
