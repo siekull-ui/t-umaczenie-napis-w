@@ -142,4 +142,15 @@ def apply_hero_layout():
             <p>Twoje najlepsze projekty.</p>
         </div>
 
-        <div id="content-contact" class="tab-content
+<div id="content-contact" class="tab-content">
+            <h1>Kontakt</h1>
+            <p>Zadzwoń do mnie.</p>
+        </div>
+    </div>
+    """  # <--- TEGO CI BRAKUJE (Zamknięcie struktury HTML)
+
+    # To musi być pod spodem, żeby Streamlit w ogóle to wyrenderował
+    st.markdown(css_styles + html_structure, unsafe_allow_html=True)
+
+# Wywołanie całej naszej funkcji na samym końcu pliku (bez wcięć)
+apply_hero_layout()
