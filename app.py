@@ -8,8 +8,8 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- 2. KOMPLETNY INTERFEJS (CSS + HTML) ---
-def apply_minimalist_layout():
+# --- 2. PRESTIŻOWY INTERFEJS (STACJONARNA STRZAŁKA) ---
+def apply_fixed_arrow_layout():
     style = """
     <style>
     /* UKRYCIE ELEMENTÓW SYSTEMOWYCH */
@@ -41,23 +41,23 @@ def apply_minimalist_layout():
         display: none;
     }
 
-    /* PANEL BOCZNY */
+    /* --- PANEL BOCZNY --- */
     #custom-sidebar {
         position: fixed;
         top: var(--margin);
         bottom: var(--margin);
-        left: calc(-1 * var(--sidebar-width) - 2cm);
+        left: calc(-1 * var(--sidebar-width) - 2cm); /* Ukryty */
         width: var(--sidebar-width);
         background: rgba(255, 255, 255, 0.08);
         backdrop-filter: blur(40px) saturate(150%);
         -webkit-backdrop-filter: blur(40px) saturate(150%);
         border: 1px solid rgba(255, 255, 255, 0.2);
         border-radius: 30px;
-        transition: all 0.8s var(--elastic-curve);
+        transition: left 0.8s var(--elastic-curve);
         z-index: 1000;
     }
 
-    /* GŁÓWNY KONTENER */
+    /* --- GŁÓWNY KONTENER --- */
     #main-canvas {
         position: fixed;
         top: var(--margin);
@@ -69,37 +69,35 @@ def apply_minimalist_layout():
         -webkit-backdrop-filter: blur(45px) saturate(160%);
         border: 1px solid rgba(255, 255, 255, 0.25);
         border-radius: 35px;
-        transition: all 0.8s var(--elastic-curve);
+        transition: left 0.8s var(--elastic-curve);
         z-index: 500;
         box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
     }
 
-    /* MINIMALISTYCZNA STRZAŁKA (LABEL) */
+    /* --- STACJONARNA STRZAŁKA (PRESTIGE LOOK) --- */
     .toggle-label {
         position: fixed;
-        /* Umiejscowienie wewnątrz marginesu 1cm */
-        left: 0.35cm; 
+        left: 0.35cm; /* Stała pozycja w marginesie */
         top: 50%;
-        transform: translateY(-50%);
+        transform: translateY(-50%); /* Tylko wyśrodkowanie w pionie */
         cursor: pointer;
-        z-index: 2000;
-        color: rgba(255, 255, 255, 0.6);
-        font-size: 40px;
-        font-weight: 100; /* Bardzo cienka */
-        font-family: serif; /* Dla ładniejszego kształtu '>' */
-        transition: all 0.8s var(--elastic-curve);
+        z-index: 2500;
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 42px;
+        font-weight: 100;
+        font-family: serif;
         user-select: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        
+        /* Animujemy tylko obrót i kolor, 'left' zostaje stały */
+        transition: transform 0.6s var(--elastic-curve), color 0.3s ease;
     }
 
     .toggle-label:hover {
-        color: white;
-        transform: translateY(-50%) scale(1.2);
+        color: rgba(255, 255, 255, 1);
+        text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
     }
 
-    /* LOGIKA DYNAMIKI */
+    /* --- LOGIKA DYNAMIKI --- */
     
     #sidebar-checkbox:checked ~ #custom-sidebar {
         left: var(--margin);
@@ -109,11 +107,10 @@ def apply_minimalist_layout():
         left: calc(var(--sidebar-width) + var(--margin) + 0.5cm);
     }
 
+    /* Strzałka obraca się o 180 stopni w swojej stałej pozycji */
     #sidebar-checkbox:checked ~ .toggle-label {
-        /* Przesunięcie do marginesu między panelem a kontenerem */
-        left: calc(var(--sidebar-width) + var(--margin) + 0.1cm);
         transform: translateY(-50%) rotate(180deg);
-        color: rgba(255, 255, 255, 0.8);
+        color: rgba(255, 255, 255, 0.7);
     }
     </style>
 
@@ -126,4 +123,4 @@ def apply_minimalist_layout():
     st.markdown(style, unsafe_allow_html=True)
 
 # Wywołanie interfejsu
-apply_minimalist_layout()
+apply_fixed_arrow_layout()
