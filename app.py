@@ -1,142 +1,111 @@
 import streamlit as st
 
-# --- 1. MINIMALISTYCZNA KONFIGURACJA ---
+# --- 1. KONFIGURACJA ---
 st.set_page_config(
     page_title="Blank Hero",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# --- 2. KONSTRUKCJA INTERFEJSU (CSS + HTML) ---
-def apply_hero_layout():
-    
-    # Zmienna przechowująca wyłącznie style CSS
-    css_styles = """
+# --- 2. STYLE CSS (Wstrzyknięte raz) ---
+st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap');
 
-    /* Ukrycie elementów systemowych Streamlit */
+    /* Ukrycie śmieci */
     [data-testid="stHeader"], [data-testid="stFooter"], [data-testid="stToolbar"] {
         display: none !important;
     }
 
-    /* Tło aplikacji */
     .stApp {
         background-color: #F0D3DE !important;
     }
 
-    /* KONTENER HERO */
-    #hero-canvas {
+    /* Główny kontener (Canvas) */
+    .hero-container {
         position: fixed;
-        top: 1cm;
-        bottom: 1cm;
-        left: 1cm;
-        right: 1cm;
-        
+        top: 1cm; bottom: 1cm; left: 1cm; right: 1cm;
         background: rgba(255, 255, 255, 0.25);
         backdrop-filter: blur(25px) saturate(150%);
-        -webkit-backdrop-filter: blur(25px) saturate(150%);
-        
         border-radius: 1cm;
-        border: none;
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        
-        z-index: 1000;
+        padding: 40px;
+        z-index: 0;
+        overflow-y: auto;
     }
 
-    /* --- NAWIGACJA --- */
-    .hero-nav {
+    /* Stylizacja przycisków Streamlit, aby wyglądały jak Twoje linki */
+    div.stButton > button {
+        background: none !important;
+        border: none !important;
+        color: #1a1a1a !important;
+        font-family: 'Poppins', sans-serif !important;
+        font-size: 14px !important;
+        font-weight: 500 !important;
+        padding: 0 !important;
+        transition: all 0.3s ease;
+    }
+
+    /* Efekt fali dla "aktywnego" stanu (symulowany przez st.session_state) */
+    .active-tab {
+        border-bottom: 3px solid #FF2A5F !important;
+        padding-bottom: 5px !important;
+    }
+    
+    /* Pozycjonowanie nawigacji wewnątrz kontenera */
+    .nav-wrapper {
         position: absolute;
         top: 40px;
         right: 50px;
         display: flex;
-        gap: 60px;
-        align-items: center;
-        font-family: 'Poppins', sans-serif;
-    }
-
-    .hero-nav a {
-        color: #1a1a1a !important;
-        text-decoration: none;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-        position: relative;
-    }
-
-    /* FALA - przygotowana tylko pod aktywne kliknięcie */
-    .hero-nav a::after {
-        content: '';
-        position: absolute;
-        bottom: -10px;
-        left: -15px;
-        right: -15px;
-        height: 6px;
-        
-        background-image: url("data:image/svg+xml,%3Csvg width='30' height='6' viewBox='0 0 30 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 3C5 1 10 1 15 3C20 5 25 5 30 3' stroke='%23FF2A5F' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-        background-repeat: repeat-x;
-        
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-
-    /* TYLKO AKTYWNA ZAKŁADKA MA FALĘ */
-    .hero-nav a.active::after {
-        opacity: 1;
-    }
-
-    /* Ikonka lupki */
-    .hero-nav .search-icon {
-        margin-left: -20px;
-        display: flex;
-        align-items: center;
-    }
-
-    .hero-nav .search-icon svg {
-        width: 18px;
-        height: 18px;
-        stroke: #1a1a1a;
-        stroke-width: 2;
-        transition: stroke 0.2s ease;
-    }
-
-    .hero-nav a.search-icon::after {
-        display: none; 
-    }
-
-    /* Lupka reaguje na najechanie kursorem */
-    .hero-nav .search-icon:hover svg {
-        stroke: #FF2A5F; 
-    }
-
-    /* Usunięcie marginesów domyślnych Streamlit */
-    .main .block-container {
-        padding: 0 !important;
+        gap: 30px;
     }
     </style>
-    """
+""", unsafe_allow_html=True)
 
-    # Zmienna przechowująca wyłącznie strukturę HTML
-    html_structure = """
-    <div id="hero-canvas">
-        <nav class="hero-nav">
-            <a class="active">Home</a>
-            <a>About</a>
-            <a>Services</a>
-            <a>Portfolio</a>
-            <a>Contact</a>
-            <a class="search-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-            </a>
-        </nav>
-    </div>
-    """
+# --- 3. LOGIKA NAWIGACJI ---
+if 'active_tab' not in st.session_state:
+    st.session_state.active_tab = "Home"
 
-    # Wstrzyknięcie połączonego CSS i HTML do aplikacji
-    st.markdown(css_styles + html_structure, unsafe_allow_html=True)
+def set_tab(name):
+    st.session_state.active_tab = name
 
-# Wywołanie układu
-apply_hero_layout()
+# --- 4. RENDEROWANIE INTERFEJSU ---
+
+# Otwieramy główny kontener wizualny
+st.markdown('<div class="hero-container">', unsafe_allow_html=True)
+
+# Tworzymy nawigację używając kolumn Streamlit
+cols = st.columns([5, 1, 1, 1, 1, 1, 0.5]) # Proporcje dla menu
+
+tabs = ["Home", "About", "Services", "Portfolio", "Contact"]
+
+with st.container():
+    # Pusta kolumna 0 dla zrobienia miejsca po lewej
+    for i, tab in enumerate(tabs):
+        with cols[i+1]:
+            # Sprawdzamy czy to ta zakładka jest aktywna
+            is_active = "active-tab" if st.session_state.active_tab == tab else ""
+            if st.button(tab, key=tab, on_click=set_tab, args=(tab,)):
+                pass # on_click załatwia sprawę
+            
+            # Wstrzykujemy małą linię (falę) pod aktywnym przyciskiem
+            if st.session_state.active_tab == tab:
+                st.markdown(f'<div style="height:2px; background:#FF2A5F; width:20px; margin-top:-10px;"></div>', unsafe_allow_html=True)
+
+# --- 5. TREŚĆ ZAKŁADEK ---
+st.markdown("---") # Separator wizualny (opcjonalnie)
+
+if st.session_state.active_tab == "Home":
+    st.title("Witaj w Home")
+    st.write("To jest zawartość dynamiczna bez przeładowania strony.")
+
+elif st.session_state.active_tab == "About":
+    st.title("O nas")
+    st.write("Jesteśmy zespołem pasjonatów designu.")
+
+elif st.session_state.active_tab == "Services":
+    st.title("Nasze Usługi")
+    st.info("Oferujemy projektowanie UI/UX i development.")
+
+# Zamykamy kontener wizualny
+st.markdown('</div>', unsafe_allow_html=True)
