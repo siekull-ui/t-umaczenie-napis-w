@@ -1,142 +1,29 @@
 import streamlit as st
+import streamlit.components.v1 as components
 
-# --- 1. MINIMALISTYCZNA KONFIGURACJA ---
-st.set_page_config(
-    page_title="Blank Hero",
-    layout="wide",
-    initial_sidebar_state="collapsed"
-)
+# Konfiguracja strony Streamlit
+st.set_page_config(page_title="Lumina Translate", layout="wide", initial_sidebar_state="collapsed")
 
-# --- 2. KONSTRUKCJA INTERFEJSU (CSS + HTML) ---
-def apply_hero_layout():
-    
-    # Zmienna przechowująca wyłącznie style CSS
-    css_styles = """
+# Ukrycie domyślnych elementów Streamlita (np. menu, marginesy), żeby Twój HTML wyglądał czysto
+st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap');
-
-    /* Ukrycie elementów systemowych Streamlit */
-    [data-testid="stHeader"], [data-testid="stFooter"], [data-testid="stToolbar"] {
-        display: none !important;
-    }
-
-    /* Tło aplikacji */
-    .stApp {
-        background-color: #F0D3DE !important;
-    }
-
-    /* KONTENER HERO */
-    #hero-canvas {
-        position: fixed;
-        top: 1cm;
-        bottom: 1cm;
-        left: 1cm;
-        right: 1cm;
-        
-        background: rgba(255, 255, 255, 0.25);
-        backdrop-filter: blur(25px) saturate(150%);
-        -webkit-backdrop-filter: blur(25px) saturate(150%);
-        
-        border-radius: 1cm;
-        border: none;
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        
-        z-index: 1000;
-    }
-
-    /* --- NAWIGACJA --- */
-    .hero-nav {
-        position: absolute;
-        top: 40px;
-        right: 50px;
-        display: flex;
-        gap: 60px;
-        align-items: center;
-        font-family: 'Poppins', sans-serif;
-    }
-
-    .hero-nav a {
-        color: #1a1a1a !important;
-        text-decoration: none;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-        position: relative;
-    }
-
-    /* FALA - przygotowana tylko pod aktywne kliknięcie */
-    .hero-nav a::after {
-        content: '';
-        position: absolute;
-        bottom: -10px;
-        left: -15px;
-        right: -15px;
-        height: 6px;
-        
-        background-image: url("data:image/svg+xml,%3Csvg width='30' height='6' viewBox='0 0 30 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 3C5 1 10 1 15 3C20 5 25 5 30 3' stroke='%23FF2A5F' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-        background-repeat: repeat-x;
-        
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-
-    /* TYLKO AKTYWNA ZAKŁADKA MA FALĘ */
-    .hero-nav a.active::after {
-        opacity: 1;
-    }
-
-    /* Ikonka lupki */
-    .hero-nav .search-icon {
-        margin-left: -20px;
-        display: flex;
-        align-items: center;
-    }
-
-    .hero-nav .search-icon svg {
-        width: 18px;
-        height: 18px;
-        stroke: #1a1a1a;
-        stroke-width: 2;
-        transition: stroke 0.2s ease;
-    }
-
-    .hero-nav a.search-icon::after {
-        display: none; 
-    }
-
-    /* Lupka reaguje na najechanie kursorem */
-    .hero-nav .search-icon:hover svg {
-        stroke: #FF2A5F; 
-    }
-
-    /* Usunięcie marginesów domyślnych Streamlit */
-    .main .block-container {
-        padding: 0 !important;
-    }
+        .block-container {
+            padding-top: 0rem;
+            padding-bottom: 0rem;
+            padding-left: 0rem;
+            padding-right: 0rem;
+        }
+        header {visibility: hidden;}
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
     </style>
-    """
+""", unsafe_allow_html=True)
 
-    # Zmienna przechowująca wyłącznie strukturę HTML
-    html_structure = """
-    <div id="hero-canvas">
-        <nav class="hero-nav">
-            <a class="active">Home</a>
-            <a>About</a>
-            <a>Services</a>
-            <a>Portfolio</a>
-            <a>Contact</a>
-            <a class="search-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-            </a>
-        </nav>
-    </div>
-    """
+# Twój kod HTML z podanego pliku
+html_code = """
+<!DOCTYPE html>
+<html class="light" lang="pl"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script id="tailwind-config">      tailwind.config = {        darkMode: "class",        theme: {          extend: {            colors: {              "surface-variant": "#dce4e8",              "secondary": "#4657b6",              "on-secondary": "#faf8ff",              "on-surface-variant": "#596064",              "tertiary-dim": "#5b3fa9",              "on-secondary-container": "#3849a7",              "primary-container": "#e4e2e5",              "surface": "#f7f9fb",              "surface-container-low": "#f0f4f7",              "secondary-container": "#dee0ff",              "on-background": "#2c3437",              "surface-container-highest": "#dce4e8",              "surface-dim": "#d4dbdf",              "on-tertiary-fixed": "#000000",              "surface-tint": "#5f5f62",              "error": "#a8364b",              "outline-variant": "#acb3b7",              "on-tertiary": "#fdf7ff",              "secondary-fixed": "#dee0ff",              "on-tertiary-container": "#230062",              "on-secondary-fixed": "#233594",              "primary-fixed": "#e4e2e5",              "secondary-dim": "#3a4aa9",              "on-error": "#fff7f7",              "primary-dim": "#535356",              "inverse-surface": "#0b0f10",              "outline": "#747c80",              "tertiary-container": "#a589f8",              "error-dim": "#6b0221",              "on-error-container": "#6e0523",              "background": "#f7f9fb",              "secondary-fixed-dim": "#ccd2ff",              "inverse-primary": "#fefbff",              "on-primary-fixed-variant": "#5c5b5e",              "inverse-on-surface": "#9a9d9f",              "surface-container-lowest": "#ffffff",              "surface-container-high": "#e3e9ed",              "tertiary": "#684cb6",              "surface-bright": "#f7f9fb",              "on-primary": "#fbf8fc",              "primary": "#5f5f62",              "on-tertiary-fixed-variant": "#2e007c",              "on-primary-container": "#525155",              "tertiary-fixed": "#a589f8",              "error-container": "#f97386",              "surface-container": "#eaeff2",              "on-primary-fixed": "#3f3f42",              "on-surface": "#2c3437",              "on-secondary-fixed-variant": "#4353b2",              "primary-fixed-dim": "#d6d3d7",              "tertiary-fixed-dim": "#987cea"            },            fontFamily: {              "headline": ["Manrope"],              "body": ["Inter"],              "label": ["Inter"]            },            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},          },        },      }    </script><style>        .glass-panel {            background: rgba(255, 255, 255, 0.2);            backdrop-filter: blur(12px);            -webkit-backdrop-filter: blur(12px);            border: 1px solid rgba(255, 255, 255, 0.4);        }        .abstract-bg {            background: linear-gradient(135deg, #f0f4f7 0%, #e0e7ff 50%, #f3e8ff 100%);        }        .material-symbols-outlined {            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;        }    </style></head><body class="font-body bg-background text-on-surface min-h-screen flex flex-col abstract-bg"><header class="fixed top-0 w-full z-50 bg-white/10 dark:bg-black/10 backdrop-blur-md border-b border-white/15 dark:border-white/5"><nav class="flex justify-between items-center h-16 px-8 max-w-7xl mx-auto"><div class="text-2xl font-bold tracking-tighter text-slate-900 dark:text-slate-100 font-headline">Lumina Translate</div><div class="hidden md:flex items-center gap-8"><a class="font-manrope text-sm font-semibold tracking-tight text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-500 pb-1" href="#">Editor</a><a class="font-manrope text-sm font-semibold tracking-tight text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors" href="#">History</a><a class="font-manrope text-sm font-semibold tracking-tight text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors" href="#">Guide</a></div><div class="flex items-center gap-4"><button class="p-2 hover:bg-white/20 dark:hover:bg-white/5 rounded-lg transition-all active:scale-95 duration-150 ease-in-out"><span class="material-symbols-outlined text-slate-600 dark:text-slate-300">settings</span></button><button class="p-2 hover:bg-white/20 dark:hover:bg-white/5 rounded-lg transition-all active:scale-95 duration-150 ease-in-out"><span class="material-symbols-outlined text-slate-600 dark:text-slate-300">account_circle</span></button></div></nav></header><main class="flex-grow flex flex-col items-center justify-center px-6 pt-24 pb-12"><div class="w-full max-w-4xl text-center mb-12"><h1 class="font-headline text-5xl md:text-6xl font-extrabold tracking-tight text-on-background mb-4">Tłumacz SRT</h1><p class="font-body text-lg text-on-surface-variant max-w-2xl mx-auto leading-relaxed">Prześlij plik z napisami, wybierz język i pobierz gotowe tłumaczenie</p></div><div class="glass-panel w-full max-w-3xl rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden"><div class="space-y-10"><div class="relative group"><div class="border-2 border-dashed border-outline-variant/40 rounded-2xl bg-surface-container-lowest/20 p-12 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-secondary-container/30 transition-all duration-300"><div class="w-16 h-16 bg-white/40 rounded-full flex items-center justify-center mb-6 shadow-sm border border-white/50"><span class="material-symbols-outlined text-secondary text-4xl" data-weight="fill" style="font-variation-settings: 'FILL' 1;">upload_file</span></div><h3 class="font-headline text-xl font-semibold text-on-surface mb-2">Upuść plik .srt tutaj</h3><p class="font-body text-sm text-on-surface-variant">lub kliknij, aby wybrać z komputera</p></div></div><div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end"><div class="space-y-2"><label class="font-label text-xs font-semibold uppercase tracking-wider text-on-surface-variant/80 ml-1">Z języka:</label><div class="relative group"><select class="w-full appearance-none bg-surface-bright/40 backdrop-blur-md border border-outline-variant/15 rounded-xl px-4 py-3.5 pr-10 font-label text-sm text-on-surface focus:ring-2 focus:ring-secondary/20 focus:border-secondary/30 transition-all outline-none"><option>Wykryj automatycznie</option><option>Angielski</option><option>Niemiecki</option><option>Francuski</option></select><span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-xl">expand_more</span></div></div><div class="space-y-2"><label class="font-label text-xs font-semibold uppercase tracking-wider text-on-surface-variant/80 ml-1">Na język:</label><div class="relative group"><select class="w-full appearance-none bg-surface-bright/40 backdrop-blur-md border border-outline-variant/15 rounded-xl px-4 py-3.5 pr-10 font-label text-sm text-on-surface focus:ring-2 focus:ring-secondary/20 focus:border-secondary/30 transition-all outline-none"><option disabled="" selected="">Wybierz...</option><option>Polski</option><option>Hiszpański</option><option>Włoski</option><option>Japoński</option></select><span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-xl">expand_more</span></div></div></div><div class="pt-4"><button class="w-full bg-primary hover:bg-primary-dim text-white font-headline text-base font-bold py-4 rounded-xl shadow-lg transition-all active:scale-[0.98] flex items-center justify-center gap-3"><span class="material-symbols-outlined text-xl">translate</span> Przetłumacz </button></div></div><div class="absolute -top-24 -right-24 w-64 h-64 bg-tertiary/10 rounded-full blur-3xl pointer-events-none"></div><div class="absolute -bottom-24 -left-24 w-64 h-64 bg-secondary/10 rounded-full blur-3xl pointer-events-none"></div></div><div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl w-full"><div class="flex flex-col items-center text-center p-6 space-y-3"><span class="material-symbols-outlined text-tertiary text-3xl">speed</span><h4 class="font-headline font-bold text-on-background">Błyskawiczne API</h4><p class="text-xs text-on-surface-variant leading-relaxed">Tłumaczenie godzinnego materiału w mniej niż 30 sekund z zachowaniem kontekstu.</p></div><div class="flex flex-col items-center text-center p-6 space-y-3"><span class="material-symbols-outlined text-tertiary text-3xl">auto_fix_high</span><h4 class="font-headline font-bold text-on-background">Inteligentna korekta</h4><p class="text-xs text-on-surface-variant leading-relaxed">Automatyczne dopasowanie długości linii i interpunkcji do standardów emisyjnych.</p></div><div class="flex flex-col items-center text-center p-6 space-y-3"><span class="material-symbols-outlined text-tertiary text-3xl">security</span><h4 class="font-headline font-bold text-on-background">Prywatność SRT</h4><p class="text-xs text-on-surface-variant leading-relaxed">Twoje pliki są przetwarzane w pamięci RAM i usuwane natychmiast po zakończeniu sesji.</p></div></div></main><footer class="w-full py-12 mt-auto bg-slate-50/30 dark:bg-slate-900/30 backdrop-blur-sm"><div class="flex flex-col md:flex-row justify-between items-center px-12 gap-6 max-w-7xl mx-auto"><div class="font-inter text-xs tracking-wide text-slate-400 dark:text-slate-500">© 2024 Lumina Editorial. Translucent Subtitling Engine.</div><div class="flex gap-8"><a class="font-inter text-xs tracking-wide text-slate-400 hover:text-indigo-400 transition-colors underline decoration-indigo-500/30 underline-offset-4" href="#">Privacy</a><a class="font-inter text-xs tracking-wide text-slate-400 hover:text-indigo-400 transition-colors underline decoration-indigo-500/30 underline-offset-4" href="#">Terms</a><a class="font-inter text-xs tracking-wide text-slate-400 hover:text-indigo-400 transition-colors underline decoration-indigo-500/30 underline-offset-4" href="#">API Documentation</a></div></div></footer></body></html>
+"""
 
-    # Wstrzyknięcie połączonego CSS i HTML do aplikacji
-    st.markdown(css_styles + html_structure, unsafe_allow_html=True)
-
-# Wywołanie układu
-apply_hero_layout()
+# Renderowanie HTML, ustawiamy dużą wysokość, aby uniknąć paska przewijania wewnątrz ramki
+components.html(html_code, height=1200, scrolling=True)
