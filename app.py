@@ -1,29 +1,216 @@
 import streamlit as st
-import streamlit.components.v1 as components
+from streamlit_option_menu import option_menu
 
-# Konfiguracja strony Streamlit
-st.set_page_config(page_title="Lumina Translate", layout="wide", initial_sidebar_state="collapsed")
+# --- KONFIGURACJA STRONY ---
+st.set_page_config(page_title="Korepetycje Biologia", page_icon="🧬", layout="wide", initial_sidebar_state="collapsed")
 
-# Ukrycie domyślnych elementów Streamlita (np. menu, marginesy), żeby Twój HTML wyglądał czysto
-st.markdown("""
-    <style>
-        .block-container {
-            padding-top: 0rem;
-            padding-bottom: 0rem;
-            padding-left: 0rem;
-            padding-right: 0rem;
-        }
-        header {visibility: hidden;}
-        #MainMenu {visibility: hidden;}
-        footer {visibility: hidden;}
-    </style>
-""", unsafe_allow_html=True)
+# --- STYLE CSS (GLASSMORPHISM) ---
+css = """
+<style>
+/* Ukrycie domyślnego UI Streamlita */
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
+.block-container {padding-top: 2rem; padding-bottom: 2rem;}
 
-# Twój kod HTML z podanego pliku
-html_code = """
-<!DOCTYPE html>
-<html class="light" lang="pl"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script id="tailwind-config">      tailwind.config = {        darkMode: "class",        theme: {          extend: {            colors: {              "surface-variant": "#dce4e8",              "secondary": "#4657b6",              "on-secondary": "#faf8ff",              "on-surface-variant": "#596064",              "tertiary-dim": "#5b3fa9",              "on-secondary-container": "#3849a7",              "primary-container": "#e4e2e5",              "surface": "#f7f9fb",              "surface-container-low": "#f0f4f7",              "secondary-container": "#dee0ff",              "on-background": "#2c3437",              "surface-container-highest": "#dce4e8",              "surface-dim": "#d4dbdf",              "on-tertiary-fixed": "#000000",              "surface-tint": "#5f5f62",              "error": "#a8364b",              "outline-variant": "#acb3b7",              "on-tertiary": "#fdf7ff",              "secondary-fixed": "#dee0ff",              "on-tertiary-container": "#230062",              "on-secondary-fixed": "#233594",              "primary-fixed": "#e4e2e5",              "secondary-dim": "#3a4aa9",              "on-error": "#fff7f7",              "primary-dim": "#535356",              "inverse-surface": "#0b0f10",              "outline": "#747c80",              "tertiary-container": "#a589f8",              "error-dim": "#6b0221",              "on-error-container": "#6e0523",              "background": "#f7f9fb",              "secondary-fixed-dim": "#ccd2ff",              "inverse-primary": "#fefbff",              "on-primary-fixed-variant": "#5c5b5e",              "inverse-on-surface": "#9a9d9f",              "surface-container-lowest": "#ffffff",              "surface-container-high": "#e3e9ed",              "tertiary": "#684cb6",              "surface-bright": "#f7f9fb",              "on-primary": "#fbf8fc",              "primary": "#5f5f62",              "on-tertiary-fixed-variant": "#2e007c",              "on-primary-container": "#525155",              "tertiary-fixed": "#a589f8",              "error-container": "#f97386",              "surface-container": "#eaeff2",              "on-primary-fixed": "#3f3f42",              "on-surface": "#2c3437",              "on-secondary-fixed-variant": "#4353b2",              "primary-fixed-dim": "#d6d3d7",              "tertiary-fixed-dim": "#987cea"            },            fontFamily: {              "headline": ["Manrope"],              "body": ["Inter"],              "label": ["Inter"]            },            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},          },        },      }    </script><style>        .glass-panel {            background: rgba(255, 255, 255, 0.2);            backdrop-filter: blur(12px);            -webkit-backdrop-filter: blur(12px);            border: 1px solid rgba(255, 255, 255, 0.4);        }        .abstract-bg {            background: linear-gradient(135deg, #f0f4f7 0%, #e0e7ff 50%, #f3e8ff 100%);        }        .material-symbols-outlined {            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;        }    </style></head><body class="font-body bg-background text-on-surface min-h-screen flex flex-col abstract-bg"><header class="fixed top-0 w-full z-50 bg-white/10 dark:bg-black/10 backdrop-blur-md border-b border-white/15 dark:border-white/5"><nav class="flex justify-between items-center h-16 px-8 max-w-7xl mx-auto"><div class="text-2xl font-bold tracking-tighter text-slate-900 dark:text-slate-100 font-headline">Lumina Translate</div><div class="hidden md:flex items-center gap-8"><a class="font-manrope text-sm font-semibold tracking-tight text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-500 pb-1" href="#">Editor</a><a class="font-manrope text-sm font-semibold tracking-tight text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors" href="#">History</a><a class="font-manrope text-sm font-semibold tracking-tight text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors" href="#">Guide</a></div><div class="flex items-center gap-4"><button class="p-2 hover:bg-white/20 dark:hover:bg-white/5 rounded-lg transition-all active:scale-95 duration-150 ease-in-out"><span class="material-symbols-outlined text-slate-600 dark:text-slate-300">settings</span></button><button class="p-2 hover:bg-white/20 dark:hover:bg-white/5 rounded-lg transition-all active:scale-95 duration-150 ease-in-out"><span class="material-symbols-outlined text-slate-600 dark:text-slate-300">account_circle</span></button></div></nav></header><main class="flex-grow flex flex-col items-center justify-center px-6 pt-24 pb-12"><div class="w-full max-w-4xl text-center mb-12"><h1 class="font-headline text-5xl md:text-6xl font-extrabold tracking-tight text-on-background mb-4">Tłumacz SRT</h1><p class="font-body text-lg text-on-surface-variant max-w-2xl mx-auto leading-relaxed">Prześlij plik z napisami, wybierz język i pobierz gotowe tłumaczenie</p></div><div class="glass-panel w-full max-w-3xl rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden"><div class="space-y-10"><div class="relative group"><div class="border-2 border-dashed border-outline-variant/40 rounded-2xl bg-surface-container-lowest/20 p-12 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-secondary-container/30 transition-all duration-300"><div class="w-16 h-16 bg-white/40 rounded-full flex items-center justify-center mb-6 shadow-sm border border-white/50"><span class="material-symbols-outlined text-secondary text-4xl" data-weight="fill" style="font-variation-settings: 'FILL' 1;">upload_file</span></div><h3 class="font-headline text-xl font-semibold text-on-surface mb-2">Upuść plik .srt tutaj</h3><p class="font-body text-sm text-on-surface-variant">lub kliknij, aby wybrać z komputera</p></div></div><div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end"><div class="space-y-2"><label class="font-label text-xs font-semibold uppercase tracking-wider text-on-surface-variant/80 ml-1">Z języka:</label><div class="relative group"><select class="w-full appearance-none bg-surface-bright/40 backdrop-blur-md border border-outline-variant/15 rounded-xl px-4 py-3.5 pr-10 font-label text-sm text-on-surface focus:ring-2 focus:ring-secondary/20 focus:border-secondary/30 transition-all outline-none"><option>Wykryj automatycznie</option><option>Angielski</option><option>Niemiecki</option><option>Francuski</option></select><span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-xl">expand_more</span></div></div><div class="space-y-2"><label class="font-label text-xs font-semibold uppercase tracking-wider text-on-surface-variant/80 ml-1">Na język:</label><div class="relative group"><select class="w-full appearance-none bg-surface-bright/40 backdrop-blur-md border border-outline-variant/15 rounded-xl px-4 py-3.5 pr-10 font-label text-sm text-on-surface focus:ring-2 focus:ring-secondary/20 focus:border-secondary/30 transition-all outline-none"><option disabled="" selected="">Wybierz...</option><option>Polski</option><option>Hiszpański</option><option>Włoski</option><option>Japoński</option></select><span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-xl">expand_more</span></div></div></div><div class="pt-4"><button class="w-full bg-primary hover:bg-primary-dim text-white font-headline text-base font-bold py-4 rounded-xl shadow-lg transition-all active:scale-[0.98] flex items-center justify-center gap-3"><span class="material-symbols-outlined text-xl">translate</span> Przetłumacz </button></div></div><div class="absolute -top-24 -right-24 w-64 h-64 bg-tertiary/10 rounded-full blur-3xl pointer-events-none"></div><div class="absolute -bottom-24 -left-24 w-64 h-64 bg-secondary/10 rounded-full blur-3xl pointer-events-none"></div></div><div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl w-full"><div class="flex flex-col items-center text-center p-6 space-y-3"><span class="material-symbols-outlined text-tertiary text-3xl">speed</span><h4 class="font-headline font-bold text-on-background">Błyskawiczne API</h4><p class="text-xs text-on-surface-variant leading-relaxed">Tłumaczenie godzinnego materiału w mniej niż 30 sekund z zachowaniem kontekstu.</p></div><div class="flex flex-col items-center text-center p-6 space-y-3"><span class="material-symbols-outlined text-tertiary text-3xl">auto_fix_high</span><h4 class="font-headline font-bold text-on-background">Inteligentna korekta</h4><p class="text-xs text-on-surface-variant leading-relaxed">Automatyczne dopasowanie długości linii i interpunkcji do standardów emisyjnych.</p></div><div class="flex flex-col items-center text-center p-6 space-y-3"><span class="material-symbols-outlined text-tertiary text-3xl">security</span><h4 class="font-headline font-bold text-on-background">Prywatność SRT</h4><p class="text-xs text-on-surface-variant leading-relaxed">Twoje pliki są przetwarzane w pamięci RAM i usuwane natychmiast po zakończeniu sesji.</p></div></div></main><footer class="w-full py-12 mt-auto bg-slate-50/30 dark:bg-slate-900/30 backdrop-blur-sm"><div class="flex flex-col md:flex-row justify-between items-center px-12 gap-6 max-w-7xl mx-auto"><div class="font-inter text-xs tracking-wide text-slate-400 dark:text-slate-500">© 2024 Lumina Editorial. Translucent Subtitling Engine.</div><div class="flex gap-8"><a class="font-inter text-xs tracking-wide text-slate-400 hover:text-indigo-400 transition-colors underline decoration-indigo-500/30 underline-offset-4" href="#">Privacy</a><a class="font-inter text-xs tracking-wide text-slate-400 hover:text-indigo-400 transition-colors underline decoration-indigo-500/30 underline-offset-4" href="#">Terms</a><a class="font-inter text-xs tracking-wide text-slate-400 hover:text-indigo-400 transition-colors underline decoration-indigo-500/30 underline-offset-4" href="#">API Documentation</a></div></div></footer></body></html>
+/* Głębokie tło podbijające efekt szkła */
+.stApp {
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #ffffff;
+}
+
+/* Magia Glassmorphismu dla niestandardowych elementów HTML */
+.glass-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    padding: 2.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    color: white;
+    transition: transform 0.3s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* Typografia i detale */
+h1, h2, h3, p, li {
+    font-family: 'Inter', 'Montserrat', sans-serif;
+    color: white !important;
+}
+
+/* Stylizacja natywnych przycisków Streamlit */
+div.stButton > button {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 8px !important;
+    color: white !important;
+    transition: all 0.3s ease !important;
+    padding: 0.5rem 2rem !important;
+    font-weight: bold !important;
+}
+
+div.stButton > button:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    transform: translateY(-2px) !important;
+    border-color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1) !important;
+}
+</style>
 """
+st.markdown(css, unsafe_allow_html=True)
 
-# Renderowanie HTML, ustawiamy dużą wysokość, aby uniknąć paska przewijania wewnątrz ramki
-components.html(html_code, height=1200, scrolling=True)
+# --- NAWIGACJA (ZAMROŻONY PASEK) ---
+selected = option_menu(
+    menu_title=None,
+    options=["Start", "O mnie", "Oferta", "Zapisy"],
+    icons=["house", "person", "book", "calendar-check"],
+    menu_icon="cast",
+    default_index=0,
+    orientation="horizontal",
+    styles={
+        "container": {
+            "padding": "0!important", 
+            "background-color": "rgba(255, 255, 255, 0.05)", 
+            "backdrop-filter": "blur(10px)", 
+            "border": "1px solid rgba(255, 255, 255, 0.1)", 
+            "border-radius": "10px",
+            "max-width": "800px",
+            "margin": "0 auto"
+        },
+        "icon": {"color": "white", "font-size": "18px"},
+        "nav-link": {
+            "color": "#e0e0e0", 
+            "font-size": "16px", 
+            "text-align": "center", 
+            "margin":"0px", 
+            "--hover-color": "rgba(255, 255, 255, 0.1)"
+        },
+        "nav-link-selected": {
+            "background-color": "rgba(255, 255, 255, 0.15)", 
+            "color": "white", 
+            "font-weight": "bold", 
+            "border-bottom": "2px solid #ffffff"
+        },
+    }
+)
+
+st.markdown("<br><br>", unsafe_allow_html=True)
+
+# --- WIDOKI (ZAKŁADKI) ---
+
+if selected == "Start":
+    col1, col2, col3 = st.columns([1, 4, 1])
+    with col2:
+        st.markdown("""
+        <div style="text-align: center; padding: 4rem 0;">
+            <h1 style="font-size: 4rem; font-weight: 800; margin-bottom: 1rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+                Zrozum biologię.<br>Zdaj egzaminy. Osiągnij cel.
+            </h1>
+            <p style="font-size: 1.5rem; color: #e0e0e0; margin-bottom: 2rem;">
+                Nowoczesne korepetycje łączące teorię z medyczną praktyką.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Przycisk przenoszący do zapisów (Streamlit nie pozwala łatwo sterować option_menu z poziomu przycisku,
+        # więc to wizualne CTA, które w prawdziwej aplikacji może np. przewijać stronę lub otwierać link)
+        st.markdown('<div style="display: flex; justify-content: center;">', unsafe_allow_html=True)
+        if st.button("Rozpocznij naukę", use_container_width=False):
+            st.success("Przejdź do zakładki 'Zapisy', aby wybrać termin!")
+        st.markdown('</div>', unsafe_allow_html=True)
+
+elif selected == "O mnie":
+    col1, col2, col3 = st.columns([1, 6, 1])
+    with col2:
+        st.markdown("""
+        <div class="glass-card">
+            <h2 style="text-align: center; margin-bottom: 2rem;">🧬 Twoje zdrowie i wiedza w dobrych rękach</h2>
+            <div style="display: flex; flex-wrap: wrap; gap: 2rem; align-items: center;">
+                <div style="flex: 2; min-width: 300px;">
+                    <p style="font-size: 1.1rem; line-height: 1.6;">
+                        Uważam, że biologia to instrukcja obsługi nas samych. Suche fakty z podręcznika często bywają trudne do zapamiętania, dopóki nie zobaczymy ich w życiowym kontekście.
+                    </p>
+                    <p style="font-size: 1.1rem; line-height: 1.6;">
+                        Będąc na pierwszym roku pielęgniarstwa, mam absolutnie świeże spojrzenie na to, jak szkolna teoria łączy się z prawdziwą wiedzą medyczną. Wiedzę z anatomii, fizjologii czy biochemii zdobywam i testuję na co dzień w praktyce.
+                    </p>
+                    <ul style="font-size: 1.1rem; line-height: 1.6;">
+                        <li>Przekładam trudne mechanizmy biologiczne na obrazowe, medyczne przykłady z życia wzięte.</li>
+                        <li>Pokazuję przyczynowość i skutki – uczymy się zrozumienia procesów, a nie "wykuwania" na pamięć.</li>
+                        <li>Pomagam przełamać stres przed maturą, bazując na własnym, niedawnym doświadczeniu egzaminacyjnym.</li>
+                    </ul>
+                </div>
+                <div style="flex: 1; min-width: 250px; text-align: center;">
+                    <img src="https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?auto=format&fit=crop&q=80&w=400" style="width: 100%; border-radius: 12px; border: 2px solid rgba(255,255,255,0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.4);">
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+elif selected == "Oferta":
+    st.markdown("<h2 style='text-align: center; margin-bottom: 2rem;'>📚 Wybierz poziom dla siebie</h2>", unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.markdown("""
+        <div class="glass-card" style="text-align: center;">
+            <h3>Szkoła Podstawowa</h3>
+            <h1 style="color: #4facfe;">60 zł<span style="font-size: 1rem; color: #ccc;"> / 60 min</span></h1>
+            <hr style="border-color: rgba(255,255,255,0.1);">
+            <p style="text-align: left;">🔹 Nadrabianie zaległości</p>
+            <p style="text-align: left;">🔹 Przygotowanie do sprawdzianów</p>
+            <p style="text-align: left;">🔹 Egzamin ósmoklasisty</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+    with col2:
+        st.markdown("""
+        <div class="glass-card" style="text-align: center; border: 1px solid rgba(79, 172, 254, 0.5);">
+            <h3>Liceum / Podstawa</h3>
+            <h1 style="color: #4facfe;">80 zł<span style="font-size: 1rem; color: #ccc;"> / 60 min</span></h1>
+            <hr style="border-color: rgba(255,255,255,0.1);">
+            <p style="text-align: left;">🔹 Bieżąca pomoc w nauce</p>
+            <p style="text-align: left;">🔹 Zrozumienie trudnych pojęć</p>
+            <p style="text-align: left;">🔹 Praca z arkuszami</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+    with col3:
+        st.markdown("""
+        <div class="glass-card" style="text-align: center;">
+            <h3>Matura Rozszerzona</h3>
+            <h1 style="color: #4facfe;">100 zł<span style="font-size: 1rem; color: #ccc;"> / 90 min</span></h1>
+            <hr style="border-color: rgba(255,255,255,0.1);">
+            <p style="text-align: left;">🔹 Analiza zadań maturalnych</p>
+            <p style="text-align: left;">🔹 Klucz odpowiedzi CKE</p>
+            <p style="text-align: left;">🔹 Powtórki z anatomii i genetyki</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+elif selected == "Zapisy":
+    col1, col2, col3 = st.columns([1, 6, 1])
+    with col2:
+        st.markdown("""
+        <div class="glass-card" style="text-align: center;">
+            <h2>📅 Umów się na zajęcia</h2>
+            <p>Wybierz dogodny dla siebie termin z kalendarza poniżej. Pierwsze, 30-minutowe zajęcia zapoznawcze są darmowe!</p>
+            <hr style="border-color: rgba(255,255,255,0.1); margin: 2rem 0;">
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Miejsce na integrację Calendly
+        # Wystarczy podmienić 'twoj-link-calendly' na właściwy URL z Twojego konta Calendly
+        calendly_url = "https://calendly.com/twoj-link-calendly"
+        st.components.v1.iframe(calendly_url, height=600, scrolling=True)
+
+        st.markdown("""
+        <div style="text-align: center; margin-top: 2rem; color: #aaa;">
+            <p>Masz pytania? Napisz do mnie: <b>kontakt@twojadomena.pl</b></p>
+        </div>
+        """, unsafe_allow_html=True)
