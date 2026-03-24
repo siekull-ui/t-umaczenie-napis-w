@@ -1,5 +1,6 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
+import streamlit.components.v1 as components  # DODANY IMPORT
 
 # --- KONFIGURACJA STRONY ---
 st.set_page_config(page_title="Korepetycje Biologia", page_icon="🧬", layout="wide", initial_sidebar_state="collapsed")
@@ -118,8 +119,6 @@ if selected == "Start":
         </div>
         """, unsafe_allow_html=True)
         
-        # Przycisk przenoszący do zapisów (Streamlit nie pozwala łatwo sterować option_menu z poziomu przycisku,
-        # więc to wizualne CTA, które w prawdziwej aplikacji może np. przewijać stronę lub otwierać link)
         st.markdown('<div style="display: flex; justify-content: center;">', unsafe_allow_html=True)
         if st.button("Rozpocznij naukę", use_container_width=False):
             st.success("Przejdź do zakładki 'Zapisy', aby wybrać termin!")
@@ -137,7 +136,7 @@ elif selected == "O mnie":
                         Uważam, że biologia to instrukcja obsługi nas samych. Suche fakty z podręcznika często bywają trudne do zapamiętania, dopóki nie zobaczymy ich w życiowym kontekście.
                     </p>
                     <p style="font-size: 1.1rem; line-height: 1.6;">
-                        Będąc na pierwszym roku pielęgniarstwa, mam absolutnie świeże spojrzenie na to, jak szkolna teoria łączy się z prawdziwą wiedzą medyczną. Wiedzę z anatomii, fizjologii czy biochemii zdobywam i testuję na co dzień w praktyce.
+                        Będąc na pielęgniarstwie, mam absolutnie świeże spojrzenie na to, jak szkolna teoria łączy się z prawdziwą wiedzą medyczną. Wiedzę z anatomii, fizjologii czy biochemii zdobywam i testuję na co dzień w praktyce.
                     </p>
                     <ul style="font-size: 1.1rem; line-height: 1.6;">
                         <li>Przekładam trudne mechanizmy biologiczne na obrazowe, medyczne przykłady z życia wzięte.</li>
@@ -204,10 +203,8 @@ elif selected == "Zapisy":
         </div>
         """, unsafe_allow_html=True)
         
-        # Miejsce na integrację Calendly
-        # Wystarczy podmienić 'twoj-link-calendly' na właściwy URL z Twojego konta Calendly
         calendly_url = "https://calendly.com/twoj-link-calendly"
-        st.components.v1.iframe(calendly_url, height=600, scrolling=True)
+        components.iframe(calendly_url, height=600, scrolling=True) # POPRAWIONE WYWOŁANIE
 
         st.markdown("""
         <div style="text-align: center; margin-top: 2rem; color: #aaa;">
