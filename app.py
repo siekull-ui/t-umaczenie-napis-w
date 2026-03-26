@@ -1,113 +1,150 @@
 import streamlit as st
 
 # Konfiguracja strony
-st.set_page_config(page_title="Portfolio", page_icon="👤", layout="wide")
+st.set_page_config(
+    page_title="Portfolio Student Pielęgniarstwa",
+    page_icon="👤",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
 
-# Niestandardowy CSS, aby dopasować wygląd do zdjęcia
+# Niestandardowy CSS dla efektu Glassmorphism i wyśrodkowania
+# Tutaj dzieje się cała magia stylizacji
 st.markdown("""
     <style>
-    /* Import czcionki */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap');
+    /* Import czcionki Inter dla nowoczesnego wyglądu */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
 
     html, body, [class*="st-"] {
         font-family: 'Inter', sans-serif;
+        background-color: #FFFFFF; /* Czyste białe tło */
+        color: #000000; /* Czarne napisy */
     }
 
-    /* Ukrycie standardowych elementów Streamlit */
+    /* Ukrycie standardowych elementów interfejsu Streamlit */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
+    .stApp { background-color: white; } /* Wymuszenie białego tła aplikacji */
 
-    /* Pływające Menu (Navbar) */
-    .nav-container {
+    /* Główny kontener - środkowanie wszystkiego */
+    .main-container {
         display: flex;
+        flex-direction: column;
+        align-items: center;
         justify-content: center;
-        padding: 20px 0;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        background-color: rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(10px);
-        z-index: 999;
+        text-align: center;
+        min-height: 100vh;
+        padding: 50px 20px;
     }
+
+    /* Pływające Menu (Navbar) - Glassmorphism */
     .nav-box {
-        background: white;
-        padding: 10px 30px;
+        position: fixed;
+        top: 20px;
+        background: rgba(255, 255, 255, 0.4); /* Półprzezroczyste białe tło */
         border-radius: 50px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        padding: 12px 30px;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1); /* Lekki cień */
+        backdrop-filter: blur(10px); /* Rozmycie tła - efekt szkła */
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.18);
         display: flex;
-        gap: 20px;
+        gap: 25px;
+        z-index: 1000;
+        max-width: 90%;
     }
     .nav-link {
         text-decoration: none;
-        color: #000;
+        color: #000000; /* Czarne linki */
         font-weight: 500;
         font-size: 14px;
+        white-space: nowrap;
     }
 
-    /* Główna sekcja tekstowa */
-    .hero-container {
-        text-align: center;
-        margin-top: 150px;
-        margin-bottom: 50px;
-    }
+    /* Sekcja tekstowa */
     .hero-title {
-        font-size: 64px;
+        font-size: 60px;
         font-weight: 800;
         line-height: 1.1;
+        margin-top: 100px;
         margin-bottom: 20px;
-        color: #000;
+        color: #000000; /* Czarne napisy */
     }
     .hero-subtitle {
         font-size: 20px;
-        color: #666;
-        margin-bottom: 40px;
+        color: #333333; /* Ciemnoszare napisy */
+        margin-bottom: 50px;
     }
 
-    /* Stylizacja obrazu twarzy */
-    .face-img {
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        filter: grayscale(100%);
-        transition: 0.3s;
+    /* Stylizacja obrazu twarzy w kontenerze Glassmorphism */
+    .face-image-container {
+        background: rgba(255, 255, 255, 0.3); /* Jeszcze bardziej przezroczyste */
+        border-radius: 40px;
+        padding: 20px;
+        box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15); /* Mocniejszy cień dla głębi */
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        display: inline-block; /* Aby kontener pasował do obrazu */
     }
-    .face-img:hover {
-        filter: grayscale(0%);
+    .face-img {
+        border-radius: 30px; /* Zaokrąglone rogi samego zdjęcia */
+        filter: grayscale(100%); /* Zdjęcie czarno-białe */
+        display: block;
     }
     </style>
 
-    <div class="nav-container">
+    <div style="display: flex; justify-content: center; width: 100%;">
         <div class="nav-box">
-            <a href="#" class="nav-link">O mnie</a>
-            <a href="#" class="nav-link">Wyróżnione</a>
-            <a href="#" class="nav-link">Praca</a>
-            <a href="#" class="nav-link">LinkedIn</a>
+            <a href="#" class="nav-link">Profil</a>
+            <a href="#" class="nav-link">Edukacja</a>
+            <a href="#" class="nav-link">Praktyki</a>
+            <a href="https://pl.linkedin.com/" class="nav-link" target="_blank">LinkedIn</a>
             <a href="#" class="nav-link">Kontakt</a>
         </div>
     </div>
 
-    <div class="hero-container">
-        <h1 class="hero-title">Twoje Imię<br>to Student Pielęgniarstwa</h1>
+    <div class="main-container">
+        <h1 class="hero-title">Twoje Imię to<br>Student Pielęgniarstwa</h1>
         <p class="hero-subtitle">Pasjonat opieki medycznej. Mielec, Polska.</p>
     </div>
 """, unsafe_allow_html=True)
 
-# Wyświetlenie Twojego zdjęcia z repozytorium
-# Streamlit automatycznie szuka pliku w tym samym folderze co app.py
+# Wyświetlenie zdjęcia twarzy
+# Używamy st.image z niestandardowym HTMLem, aby zastosować style Glassmorphism
 try:
-    st.image("jaja.png", width=500, use_container_width=False)
-    # Dodatkowa stylizacja obrazu przez CSS (centrowanie pod tekstem)
+    # Wczytujemy zdjęcie przez Streamlit, żeby upewnić się, że istnieje
+    st.image("jaja.png", width=400)
+    
+    # Nakładamy style na renderowany element img
     st.markdown("""
         <style>
-        img {
+        div.stImage > img {
             display: block;
             margin-left: auto;
             margin-right: auto;
+            border-radius: 30px;
             filter: grayscale(100%);
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
+            background: rgba(255, 255, 255, 0.3);
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(15px);
+        }
+        /* Kontener obrazu środkuje go w układzie wide */
+        div.stImage {
+            text-align: center;
         }
         </style>
     """, unsafe_allow_html=True)
+
 except FileNotFoundError:
     st.error("Nie znaleziono pliku jaja.png w repozytorium. Upewnij się, że nazwa jest poprawna.")
+
+# Opcjonalnie: Czysty stopka community
+st.markdown("""
+    <div style="text-align: center; color: #999; padding: 20px; font-size: 12px; margin-top: auto;">
+        Streamlit Community | Mielec, Poland
+    </div>
+""", unsafe_allow_html=True)
